@@ -66,10 +66,10 @@ class WorkspaceIndicator extends St.Widget {
         }
     }
 
-    _onDestroy() {
-        super._onDestroy();
+    destroy() {
         this.workspace.disconnect(this._windowRemovedId);
         this.workspace.disconnect(this._windowAddedId);
+        super.destroy();
     }
 });
 
@@ -95,6 +95,8 @@ class WorkspaceLayout {
 
     disable() {
         this.destroy_workspaces();
+        this.box_layout.destroy();
+        this.panel_button.destroy();
         workspaceManager.disconnect(this._workspaceSwitchedId);
         workspaceManager.disconnect(this._workspaceAddedId);
         workspaceManager.disconnect(this._workspaceRemovedId);
