@@ -11,17 +11,19 @@ const PopupMenu = imports.ui.popupMenu;
 const workspaceManager = global.workspace_manager;
 
 let WorkspaceIndicator = GObject.registerClass(
-class WorkspaceIndicator extends St.Widget {
+class WorkspaceIndicator extends St.Button {
     _init(workspace, active) {
-        super._init({
-            layout_manager: new Clutter.BinLayout(),
-            x_expand: true,
-            y_expand: false,
-        });
+        super._init()
         this.active = active;
         this.workspace = workspace;
         this._windowAddedId = this.workspace.connect('window-added', this.window_added.bind(this));
         this._windowRemovedId = this.workspace.connect('window-removed', this.window_removed.bind(this));
+
+        this._widget = new St.Widget({
+            layout_manager: new Clutter.BinLayout(),
+            x_expand: true,
+            y_expand: false,
+        });
 
         this._statusLabel = new St.Label({
             style_class: 'panel-workspace-indicator',
@@ -29,11 +31,13 @@ class WorkspaceIndicator extends St.Widget {
             text: `${this.workspace.index() + 1}`,
         });
 
+        this.connect('clicked', () => this.workspace.activate(global.get_current_time()));
+
         if (this.active) {
             this._statusLabel.add_style_class_name('active');
         }
 
-        this.add_actor(this._statusLabel);
+        this._widget.add_actor(this._statusLabel);
 
         this._thumbnailsBox = new St.BoxLayout({
             style_class: 'panel-workspace-indicator-box',
@@ -41,13 +45,10 @@ class WorkspaceIndicator extends St.Widget {
             reactive: true,
         });
 
-        this.add_actor(this._thumbnailsBox);
+        this._widget.add_actor(this._thumbnailsBox);
+        this.add_actor(this._widget);
 
         this.show_or_hide();
-    }
-
-    clicked() {
-        this.workspace.activate();
     }
 
     window_removed() {
