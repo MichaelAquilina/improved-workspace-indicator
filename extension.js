@@ -11,20 +11,17 @@ const PopupMenu = imports.ui.popupMenu;
 const workspaceManager = global.workspace_manager;
 
 let WorkspaceIndicator = GObject.registerClass(
-class WorkspaceIndicator extends PanelMenu.Button {
+class WorkspaceIndicator extends St.Widget {
     _init(workspace, active) {
-        super._init(0.0, _('Workspace Indicator'));
+        super._init({
+            layout_manager: new Clutter.BinLayout(),
+            x_expand: true,
+            y_expand: false,
+        });
         this.active = active;
         this.workspace = workspace;
         this._windowAddedId = this.workspace.connect('window-added', this.window_added.bind(this));
         this._windowRemovedId = this.workspace.connect('window-removed', this.window_removed.bind(this));
-
-        let container = new St.Widget({
-            layout_manager: new Clutter.BinLayout(),
-            x_expand: true,
-            y_expand: true,
-        });
-        this.add_actor(container);
 
         this._statusLabel = new St.Label({
             style_class: 'panel-workspace-indicator',
@@ -36,7 +33,7 @@ class WorkspaceIndicator extends PanelMenu.Button {
             this._statusLabel.add_style_class_name('active');
         }
 
-        container.add_actor(this._statusLabel);
+        this.add_actor(this._statusLabel);
 
         this._thumbnailsBox = new St.BoxLayout({
             style_class: 'panel-workspace-indicator-box',
@@ -44,7 +41,7 @@ class WorkspaceIndicator extends PanelMenu.Button {
             reactive: true,
         });
 
-        container.add_actor(this._thumbnailsBox);
+        this.add_actor(this._thumbnailsBox);
 
         this.show_or_hide();
     }
@@ -80,9 +77,16 @@ class WorkspaceIndicator extends PanelMenu.Button {
 class WorkspaceLayout {
     constructor() {
         this._indicators = [];
+        this.panel_button = null;
+        this.box_layout = null;
     }
 
     enable() {
+        this.panel_button = new PanelMenu.Button(0.0, _('Workspace Indicator'));
+        this.box_layout = new St.BoxLayout();
+        this.panel_button.add_actor(this.box_layout);
+
+        Main.panel.addToStatusArea('improved-workspace-indicator', this.panel_button);
         this.generate_workspaces();
         this._workspaceSwitchedId = workspaceManager.connect_after('workspace-switched', this.generate_workspaces.bind(this));
         this._workspaceAddedId = workspaceManager.connect_after('workspace-added', this.generate_workspaces.bind(this));
@@ -99,13 +103,15 @@ class WorkspaceLayout {
     generate_workspaces() {
         this.destroy_workspaces();
         let active_index = workspaceManager.get_active_workspace_index();
-        let i = workspaceManager.get_n_workspaces();
-        for (; i >= 0; i--) {
+        let i = 0;
+
+        for (; i < workspaceManager.get_n_workspaces(); i++) {
             let workspace = workspaceManager.get_workspace_by_index(i);
             if (workspace !== null) {
                 let indicator = new WorkspaceIndicator(workspace, i == active_index);
+
+                this.box_layout.add_actor(indicator);
                 this._indicators.push(indicator);
-                Main.panel.addToStatusArea(`workspace-indicator-${i}`, indicator);
             }
         }
     }
