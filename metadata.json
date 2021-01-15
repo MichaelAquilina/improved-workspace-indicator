@@ -1,5 +1,5 @@
 {
-    "uuid": "improved-workspace-indicator@michael.aquilina",
+    "uuid": "improved-workspace-indicator@michaelaquilina.github.io",
     "name": "Improved Workspace Indicator",
     "description": "Slightly improved workspace indicator that shows both current and in use workspaces",
     "shell-version": [ "3.38" ],
