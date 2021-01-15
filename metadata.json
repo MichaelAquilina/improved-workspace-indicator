@@ -1,9 +1,9 @@
 {
-    "uuid": "improved-workspace-indicator@michaelaquilina.github.io",
-    "name": "Improved Workspace Indicator",
-    "description": "Slightly improved workspace indicator that shows both current and in use workspaces",
-    "shell-version": [ "3.38" ],
-    "version": 1,
-    "original-authors": [ "michaelaquilina@gmail.com" ],
-    "url": "https://github.com/MichaelAquilina/improved-workspace-indicator"
+  "uuid": "improved-workspace-indicator@michaelaquilina.github.io",
+  "name": "Improved Workspace Indicator",
+  "description": "Slightly improved workspace indicator that shows both current and in use workspaces",
+  "shell-version": ["3.38"],
+  "version": 1,
+  "original-authors": ["michaelaquilina@gmail.com"],
+  "url": "https://github.com/MichaelAquilina/improved-workspace-indicator"
 }
