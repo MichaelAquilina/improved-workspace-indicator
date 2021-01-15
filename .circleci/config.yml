@@ -1,0 +1,19 @@
+---
+version: 2
+
+jobs:
+  lint:
+    docker:
+      - image: "node:12"
+    steps:
+      - checkout
+      - run:
+          name: Prettier Check
+          command: |
+            npx prettier -c .
+
+workflows:
+  version: 2
+  extension_test:
+    jobs:
+      - lint
