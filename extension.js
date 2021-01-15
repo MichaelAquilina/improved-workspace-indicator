@@ -90,14 +90,14 @@ class WorkspaceLayout {
     }
 
     disable() {
-        this.destrory_workspaces();
+        this.destroy_workspaces();
         workspaceManager.disconnect(this._workspaceSwitchedId);
         workspaceManager.disconnect(this._workspaceAddedId);
         workspaceManager.disconnect(this._workspaceRemovedId);
     }
 
     generate_workspaces() {
-        this.destrory_workspaces();
+        this.destroy_workspaces();
         let active_index = workspaceManager.get_active_workspace_index();
         let i = workspaceManager.get_n_workspaces();
         for (; i >= 0; i--) {
@@ -110,7 +110,7 @@ class WorkspaceLayout {
         }
     }
 
-    destrory_workspaces() {
+    destroy_workspaces() {
         let i = 0;
         for(; i < this._indicators.length; i++) {
             this._indicators[i].destroy();
