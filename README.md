@@ -6,3 +6,5 @@ Gnome shell extension that provides a workspace indicator more similar to i3/swa
 Namely:
 * it shows all _in use_ workspaces
 * it highlights the currently active workspace
+
+![Screenshot](screenshot.png)
