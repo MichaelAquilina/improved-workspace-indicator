@@ -8,8 +8,7 @@ const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 
-const WORKSPACE_SCHEMA = 'org.gnome.desktop.wm.preferences';
-const WORKSPACE_KEY = 'workspace-names';
+const workspaceManager = global.workspace_manager;
 
 let WorkspaceIndicator = GObject.registerClass(
 class WorkspaceIndicator extends PanelMenu.Button {
@@ -17,8 +16,8 @@ class WorkspaceIndicator extends PanelMenu.Button {
         super._init(0.0, _('Workspace Indicator'));
         this.active = active;
         this.workspace = workspace;
-        this.workspace.connect('window-added', this.window_added.bind(this));
-        this.workspace.connect('window-removed', this.window_removed.bind(this));
+        this._windowAddedId = this.workspace.connect('window-added', this.window_added.bind(this));
+        this._windowRemovedId = this.workspace.connect('window-removed', this.window_removed.bind(this));
 
         let container = new St.Widget({
             layout_manager: new Clutter.BinLayout(),
@@ -72,45 +71,54 @@ class WorkspaceIndicator extends PanelMenu.Button {
 
     _onDestroy() {
         super._onDestroy();
+        this.workspace.disconnect(this._windowRemovedId);
+        this.workspace.disconnect(this._windowAddedId);
     }
 });
 
-function init() {
-    // ExtensionUtils.initTranslations();
-}
 
-let _indicators = [];
-let workspaceManager = global.workspace_manager;
+class WorkspaceLayout {
+    constructor() {
+        this._indicators = [];
+    }
 
-function enable() {
-    generate_workspaces();
-    workspaceManager.connect_after('workspace-switched', generate_workspaces);
-    workspaceManager.connect_after('workspace-added', generate_workspaces);
-    workspaceManager.connect_after('workspace-removed', generate_workspaces);
-}
+    enable() {
+        this.generate_workspaces();
+        this._workspaceSwitchedId = workspaceManager.connect_after('workspace-switched', this.generate_workspaces.bind(this));
+        this._workspaceAddedId = workspaceManager.connect_after('workspace-added', this.generate_workspaces.bind(this));
+        this._workspaceRemovedId = workspaceManager.connect_after('workspace-removed', this.generate_workspaces.bind(this));
+    }
 
-function generate_workspaces() {
-    destrory_workspaces();
-    let active_index = workspaceManager.get_active_workspace_index();
-    let i = workspaceManager.get_n_workspaces();
-    for (; i >= 0; i--) {
-        let workspace = workspaceManager.get_workspace_by_index(i);
-        if (workspace !== null) {
-            indicator = new WorkspaceIndicator(workspace, i == active_index);
-            _indicators.push(indicator);
-            Main.panel.addToStatusArea(`workspace-indicator-${i}`, indicator);
+    disable() {
+        this.destrory_workspaces();
+        workspaceManager.disconnect(this._workspaceSwitchedId);
+        workspaceManager.disconnect(this._workspaceAddedId);
+        workspaceManager.disconnect(this._workspaceRemovedId);
+    }
+
+    generate_workspaces() {
+        this.destrory_workspaces();
+        let active_index = workspaceManager.get_active_workspace_index();
+        let i = workspaceManager.get_n_workspaces();
+        for (; i >= 0; i--) {
+            let workspace = workspaceManager.get_workspace_by_index(i);
+            if (workspace !== null) {
+                let indicator = new WorkspaceIndicator(workspace, i == active_index);
+                this._indicators.push(indicator);
+                Main.panel.addToStatusArea(`workspace-indicator-${i}`, indicator);
+            }
         }
     }
-}
 
-function destrory_workspaces() {
-    let i = 0;
-    for(; i < _indicators.length; i++) {
-        _indicators[i].destroy();
+    destrory_workspaces() {
+        let i = 0;
+        for(; i < this._indicators.length; i++) {
+            this._indicators[i].destroy();
+        }
+        this._indicators = [];
     }
-    _indicators = [];
 }
 
-function disable() {
-    destrory_workspaces();
+function init() {
+    return new WorkspaceLayout();
 }
