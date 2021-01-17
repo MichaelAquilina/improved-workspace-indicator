@@ -87,7 +87,10 @@ class WorkspaceLayout {
   }
 
   enable() {
-    this.panel_button = new PanelMenu.Button(0.0, _("Workspace Indicator"));
+    this.panel_button = new PanelMenu.Button(
+      0.0,
+      _("Improved Workspace Indicator")
+    );
     this.box_layout = new St.BoxLayout();
     this.panel_button.add_actor(this.box_layout);
 
