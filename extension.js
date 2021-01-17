@@ -81,7 +81,7 @@ let WorkspaceIndicator = GObject.registerClass(
 
 class WorkspaceLayout {
   constructor() {
-    this._indicators = [];
+    this.indicators = [];
     this.panel_button = null;
     this.box_layout = null;
   }
@@ -114,7 +114,7 @@ class WorkspaceLayout {
   }
 
   disable() {
-    this.destroy_workspaces();
+    this.destroy_indicators();
     this.box_layout.destroy();
     this.panel_button.destroy();
     workspaceManager.disconnect(this._workspaceSwitchedId);
@@ -123,7 +123,7 @@ class WorkspaceLayout {
   }
 
   generate_workspaces() {
-    this.destroy_workspaces();
+    this.destroy_indicators();
     let active_index = workspaceManager.get_active_workspace_index();
     let i = 0;
 
@@ -133,17 +133,17 @@ class WorkspaceLayout {
         let indicator = new WorkspaceIndicator(workspace, i == active_index);
 
         this.box_layout.add_actor(indicator);
-        this._indicators.push(indicator);
+        this.indicators.push(indicator);
       }
     }
   }
 
-  destroy_workspaces() {
+  destroy_indicators() {
     let i = 0;
-    for (; i < this._indicators.length; i++) {
-      this._indicators[i].destroy();
+    for (; i < this.indicators.length; i++) {
+      this.indicators[i].destroy();
     }
-    this._indicators = [];
+    this.indicators = [];
   }
 }
 
