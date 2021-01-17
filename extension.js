@@ -12,15 +12,8 @@ let WorkspaceIndicator = GObject.registerClass(
       super._init();
       this.active = active;
       this.workspace = workspace;
-      this._windowAddedId = this.workspace.connect(
-        "window-added",
-        this.window_added.bind(this)
-      );
-      this._windowRemovedId = this.workspace.connect(
-        "window-removed",
-        this.window_removed.bind(this)
-      );
 
+      // setup widgets
       this._widget = new St.Widget({
         layout_manager: new Clutter.BinLayout(),
         x_expand: true,
@@ -32,10 +25,6 @@ let WorkspaceIndicator = GObject.registerClass(
         y_align: Clutter.ActorAlign.CENTER,
         text: `${this.workspace.index() + 1}`,
       });
-
-      this.connect("clicked", () =>
-        this.workspace.activate(global.get_current_time())
-      );
 
       if (this.active) {
         this._statusLabel.add_style_class_name("active");
@@ -52,14 +41,17 @@ let WorkspaceIndicator = GObject.registerClass(
       this._widget.add_actor(this._thumbnailsBox);
       this.add_actor(this._widget);
 
-      this.show_or_hide();
-    }
+      // Connect signals
+      this._windowAddedId = this.workspace.connect("window-added", () =>
+        this.show_or_hide()
+      );
+      this._windowRemovedId = this.workspace.connect("window-removed", () =>
+        this.show_or_hide()
+      );
+      this.connect("clicked", () =>
+        this.workspace.activate(global.get_current_time())
+      );
 
-    window_removed() {
-      this.show_or_hide();
-    }
-
-    window_added() {
       this.show_or_hide();
     }
 
