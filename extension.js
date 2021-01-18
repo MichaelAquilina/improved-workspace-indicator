@@ -92,6 +92,27 @@ class WorkspaceLayout {
   }
 
   enable() {
+    this._panelPositionChangedId = this.settings.connect(
+      "changed::panel-position",
+      () => {
+        this.add_panel_button();
+      }
+    );
+
+    this.add_panel_button();
+  }
+
+  disable() {
+    this.destroy_indicators();
+    this.destory_panel_button();
+    workspaceManager.disconnect(this._workspaceSwitchedId);
+    workspaceManager.disconnect(this._workspaceAddedId);
+    workspaceManager.disconnect(this._workspaceRemovedId);
+    this.settings.disconnect(this._panelPositionChangedId);
+  }
+
+  add_panel_button() {
+    this.destory_panel_button();
     this.panel_button = new PanelMenu.Button(
       0.0,
       _("Improved Workspace Indicator")
@@ -100,38 +121,29 @@ class WorkspaceLayout {
     this.panel_button.add_actor(this.box_layout);
 
     let [position] = this.settings.get_value("panel-position").get_string();
-
     Main.panel.addToStatusArea(
       "improved-workspace-indicator",
       this.panel_button,
       0,
       position
     );
-    this.generate_workspaces();
     this._workspaceSwitchedId = workspaceManager.connect_after(
       "workspace-switched",
-      this.generate_workspaces.bind(this)
+      this.add_indicators.bind(this)
     );
     this._workspaceAddedId = workspaceManager.connect_after(
       "workspace-added",
-      this.generate_workspaces.bind(this)
+      this.add_indicators.bind(this)
     );
     this._workspaceRemovedId = workspaceManager.connect_after(
       "workspace-removed",
-      this.generate_workspaces.bind(this)
+      this.add_indicators.bind(this)
     );
+
+    this.add_indicators();
   }
 
-  disable() {
-    this.destroy_indicators();
-    this.box_layout.destroy();
-    this.panel_button.destroy();
-    workspaceManager.disconnect(this._workspaceSwitchedId);
-    workspaceManager.disconnect(this._workspaceAddedId);
-    workspaceManager.disconnect(this._workspaceRemovedId);
-  }
-
-  generate_workspaces() {
+  add_indicators() {
     this.destroy_indicators();
     let active_index = workspaceManager.get_active_workspace_index();
     let i = 0;
@@ -153,6 +165,16 @@ class WorkspaceLayout {
       this.indicators[i].destroy();
     }
     this.indicators = [];
+  }
+
+  destory_panel_button() {
+    this.destroy_indicators();
+
+    if (this.box_layout !== null) this.box_layout.destroy();
+    if (this.panel_button !== null) this.panel_button.destroy();
+
+    this.box_layout = null;
+    this.panel_button = null;
   }
 }
 
