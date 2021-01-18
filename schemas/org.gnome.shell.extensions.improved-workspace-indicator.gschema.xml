@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="improved-workspace-indicator">
+  <enum id="org.gnome.shell.extensions.improved-workspace-indicator.position">
+    <value value="0" nick="left"/>
+    <value value="1" nick="right"/>
+  </enum>
+  <schema id="org.gnome.shell.extensions.improved-workspace-indicator" path="/org/gnome/shell/extensions/improved-workspace-indicator/">
+    <key name="panel-position" enum="org.gnome.shell.extensions.improved-workspace-indicator.position">
+      <default>'right'</default>
+      <summary>Choose the position of the workspace indicator.</summary>
+    </key>
+  </schema>
+</schemalist>

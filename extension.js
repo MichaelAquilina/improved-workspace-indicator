@@ -4,6 +4,7 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
 
+const Me = ExtensionUtils.getCurrentExtension();
 const workspaceManager = global.workspace_manager;
 
 let WorkspaceIndicator = GObject.registerClass(
@@ -76,6 +77,18 @@ class WorkspaceLayout {
     this.indicators = [];
     this.panel_button = null;
     this.box_layout = null;
+
+    let gschema = Gio.SettingsSchemaSource.new_from_directory(
+      Me.dir.get_child("schemas").get_path(),
+      Gio.SettingsSchemaSource.get_default(),
+      false
+    );
+    this.settings = new Gio.Settings({
+      settings_schema: gschema.lookup(
+        "org.gnome.shell.extensions.improved-workspace-indicator",
+        true
+      ),
+    });
   }
 
   enable() {
@@ -86,9 +99,13 @@ class WorkspaceLayout {
     this.box_layout = new St.BoxLayout();
     this.panel_button.add_actor(this.box_layout);
 
+    let [position] = this.settings.get_value("panel-position").get_string();
+
     Main.panel.addToStatusArea(
       "improved-workspace-indicator",
-      this.panel_button
+      this.panel_button,
+      0,
+      position
     );
     this.generate_workspaces();
     this._workspaceSwitchedId = workspaceManager.connect_after(
