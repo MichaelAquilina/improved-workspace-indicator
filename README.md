@@ -8,3 +8,19 @@ Namely:
 - it highlights the currently active workspace
 
 ![Screenshot](screenshot.png)
+
+## Publishing a new version
+
+1. Compile the schema
+
+```shell
+glib-compile-schemas schemas
+```
+
+2. zip up the contents
+
+```shell
+zip -r improved-workspace-indicator@michaelaquilina.github.io.zip . --exclude=README.md --exclude=screenshot.png --exclude=.git/\*
+```
+
+3. upload a new version to https://extensions.gnome.org/upload/
