@@ -104,7 +104,7 @@ class WorkspaceLayout {
 
   disable() {
     this.destroy_indicators();
-    this.destory_panel_button();
+    this.destroy_panel_button();
     workspaceManager.disconnect(this._workspaceSwitchedId);
     workspaceManager.disconnect(this._workspaceAddedId);
     workspaceManager.disconnect(this._workspaceRemovedId);
@@ -112,7 +112,7 @@ class WorkspaceLayout {
   }
 
   add_panel_button() {
-    this.destory_panel_button();
+    this.destroy_panel_button();
     this.panel_button = new PanelMenu.Button(
       0.0,
       _("Improved Workspace Indicator")
@@ -167,7 +167,7 @@ class WorkspaceLayout {
     this.indicators = [];
   }
 
-  destory_panel_button() {
+  destroy_panel_button() {
     this.destroy_indicators();
 
     if (this.box_layout !== null) this.box_layout.destroy();
