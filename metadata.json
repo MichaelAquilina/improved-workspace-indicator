@@ -2,7 +2,7 @@
   "uuid": "improved-workspace-indicator@michaelaquilina.github.io",
   "name": "Improved Workspace Indicator",
   "description": "Slightly improved workspace indicator that shows both current and in use workspaces similar to i3/sway",
-  "shell-version": ["3.38"],
+  "shell-version": ["3.38", "40"],
   "version": 2,
   "original-authors": ["michaelaquilina@gmail.com"],
   "url": "https://github.com/MichaelAquilina/improved-workspace-indicator"

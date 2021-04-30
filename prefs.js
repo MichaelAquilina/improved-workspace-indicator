@@ -3,6 +3,9 @@
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
 
+const Config = imports.misc.config;
+const ShellVersion = parseFloat(Config.PACKAGE_VERSION);
+
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 
@@ -22,11 +25,25 @@ function buildPrefsWidget() {
     ),
   });
 
-  let prefsWidget = new Gtk.Grid({
-    margin: 18,
-    column_spacing: 12,
-    row_spacing: 12,
-  });
+  let prefsWidget;
+
+  // gtk4 apps do not have a margin property
+  if (ShellVersion >= 40) {
+    prefsWidget = new Gtk.Grid({
+      margin_start: 18,
+      margin_end: 18,
+      margin_top: 18,
+      margin_bottom: 18,
+      column_spacing: 12,
+      row_spacing: 12,
+    });
+  } else {
+    prefsWidget = new Gtk.Grid({
+      margin: 18,
+      column_spacing: 12,
+      row_spacing: 12,
+    });
+  }
 
   let title = new Gtk.Label({
     label: "<b>Improved Workspace Indicator Preferences</b>",
@@ -57,7 +74,10 @@ function buildPrefsWidget() {
     Gio.SettingsBindFlags.DEFAULT
   );
 
-  prefsWidget.show_all();
+  // only gtk3 apps need to run show_all()
+  if (ShellVersion < 40) {
+    prefsWidget.show_all();
+  }
 
   return prefsWidget;
 }
