@@ -9,10 +9,14 @@ const workspaceManager = global.workspace_manager;
 
 let WorkspaceIndicator = GObject.registerClass(
   class WorkspaceIndicator extends St.Button {
-    _init(workspace, active) {
+    _init(workspace, active, settings) {
       super._init();
       this.active = active;
       this.workspace = workspace;
+      this.skip_taskbar_mode = settings.get_boolean("skip-taskbar-mode");
+      this.primary_workspace_mode = settings.get_boolean(
+        "primary-workspace-mode"
+      );
 
       // setup widgets
       this._widget = new St.Widget({
@@ -57,11 +61,27 @@ let WorkspaceIndicator = GObject.registerClass(
     }
 
     show_or_hide() {
-      if (this.active || this.workspace.list_windows().length > 0) {
+      if (this.active || this.has_user_window()) {
         this.show();
       } else {
         this.hide();
       }
+    }
+
+    has_user_window() {
+      let windows = this.workspace.list_windows();
+
+      if (!this.skip_taskbar_mode && !this.primary_workspace_mode) {
+        return windows.length > 0;
+      }
+
+      return windows.some((w) => {
+        let is_shown = !this.skip_taskbar_mode || !w.is_skip_taskbar();
+        let is_primary =
+          !this.primary_workspace_mode || w.is_on_primary_monitor();
+
+        return is_shown && is_primary;
+      });
     }
 
     destroy() {
@@ -94,6 +114,20 @@ class WorkspaceLayout {
   enable() {
     this._panelPositionChangedId = this.settings.connect(
       "changed::panel-position",
+      () => {
+        this.add_panel_button();
+      }
+    );
+
+    this._panelPositionChangedId = this.settings.connect(
+      "changed::skip-taskbar-mode",
+      () => {
+        this.add_panel_button();
+      }
+    );
+
+    this._panelPositionChangedId = this.settings.connect(
+      "changed::primary-workspace-mode",
       () => {
         this.add_panel_button();
       }
@@ -151,7 +185,11 @@ class WorkspaceLayout {
     for (; i < workspaceManager.get_n_workspaces(); i++) {
       let workspace = workspaceManager.get_workspace_by_index(i);
       if (workspace !== null) {
-        let indicator = new WorkspaceIndicator(workspace, i == active_index);
+        let indicator = new WorkspaceIndicator(
+          workspace,
+          i == active_index,
+          this.settings
+        );
 
         this.box_layout.add_actor(indicator);
         this.indicators.push(indicator);
