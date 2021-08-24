@@ -10,7 +10,7 @@
       <summary>Choose the position of the workspace indicator.</summary>
     </key>
     <key name="skip-taskbar-mode" type="b">
-      <default>false</default>
+      <default>true</default>
       <summary>Ignore Taskbar-Skipped Windows.</summary>
       <description>
         Set to true to ignore `is_skip_taskbar` windows when determining in-use workspaces. This includes hidden windows created by the desktop-icons-ng extension.

@@ -9,14 +9,12 @@ const workspaceManager = global.workspace_manager;
 
 let WorkspaceIndicator = GObject.registerClass(
   class WorkspaceIndicator extends St.Button {
-    _init(workspace, active, settings) {
+    _init(workspace, active, skip_taskbar_mode, primary_workspace_mode) {
       super._init();
       this.active = active;
       this.workspace = workspace;
-      this.skip_taskbar_mode = settings.get_boolean("skip-taskbar-mode");
-      this.primary_workspace_mode = settings.get_boolean(
-        "primary-workspace-mode"
-      );
+      this.skip_taskbar_mode = skip_taskbar_mode;
+      this.primary_workspace_mode = primary_workspace_mode;
 
       // setup widgets
       this._widget = new St.Widget({
@@ -119,14 +117,14 @@ class WorkspaceLayout {
       }
     );
 
-    this._panelPositionChangedId = this.settings.connect(
+    this._skipTaskbarModeChangedId = this.settings.connect(
       "changed::skip-taskbar-mode",
       () => {
         this.add_panel_button();
       }
     );
 
-    this._panelPositionChangedId = this.settings.connect(
+    this._primaryWorkspaceModeChangedId = this.settings.connect(
       "changed::primary-workspace-mode",
       () => {
         this.add_panel_button();
@@ -143,6 +141,8 @@ class WorkspaceLayout {
     workspaceManager.disconnect(this._workspaceAddedId);
     workspaceManager.disconnect(this._workspaceRemovedId);
     this.settings.disconnect(this._panelPositionChangedId);
+    this.settings.disconnect(this._skipTaskbarModeChangedId);
+    this.settings.disconnect(this._primaryWorkspaceModeChangedId);
   }
 
   add_panel_button() {
@@ -188,7 +188,8 @@ class WorkspaceLayout {
         let indicator = new WorkspaceIndicator(
           workspace,
           i == active_index,
-          this.settings
+          this.settings.get_boolean("skip-taskbar-mode"),
+          this.settings.get_boolean("primary-workspace-mode")
         );
 
         this.box_layout.add_actor(indicator);
