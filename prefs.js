@@ -53,6 +53,8 @@ function buildPrefsWidget() {
 
   prefsWidget.attach(title, 0, 0, 2, 1);
 
+  // Panel Position Chooser
+
   let panel_position_label = new Gtk.Label({
     label: "Panel Position",
     halign: Gtk.Align.START,
@@ -71,6 +73,32 @@ function buildPrefsWidget() {
     "panel-position",
     panel_position_combo,
     "active_id",
+    Gio.SettingsBindFlags.DEFAULT
+  );
+
+  // Skip Taskbar Mode Selector
+
+  let skip_taskbar_mode_label = new Gtk.Label({
+    label:
+      "Ignore Taskbar-Skipped Windows\r" +
+      "<small>These include hidden windows from the desktop-icons-ng extension.</small>",
+    halign: Gtk.Align.START,
+    use_markup: true,
+  });
+
+  let skip_taskbar_mode_toggle = new Gtk.Switch({
+    active: this.settings.get_boolean("skip-taskbar-mode"),
+    halign: Gtk.Align.END,
+    visible: true,
+  });
+
+  prefsWidget.attach(skip_taskbar_mode_label, 0, 2, 2, 1);
+  prefsWidget.attach(skip_taskbar_mode_toggle, 2, 2, 2, 1);
+
+  this.settings.bind(
+    "skip-taskbar-mode",
+    skip_taskbar_mode_toggle,
+    "active",
     Gio.SettingsBindFlags.DEFAULT
   );
 

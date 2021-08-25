@@ -9,10 +9,11 @@ const workspaceManager = global.workspace_manager;
 
 let WorkspaceIndicator = GObject.registerClass(
   class WorkspaceIndicator extends St.Button {
-    _init(workspace, active) {
+    _init(workspace, active, skip_taskbar_mode) {
       super._init();
       this.active = active;
       this.workspace = workspace;
+      this.skip_taskbar_mode = skip_taskbar_mode;
 
       // setup widgets
       this._widget = new St.Widget({
@@ -57,11 +58,23 @@ let WorkspaceIndicator = GObject.registerClass(
     }
 
     show_or_hide() {
-      if (this.active || this.workspace.list_windows().length > 0) {
+      if (this.active || this.has_user_window()) {
         this.show();
       } else {
         this.hide();
       }
+    }
+
+    has_user_window() {
+      let windows = this.workspace.list_windows();
+
+      if (!this.skip_taskbar_mode) {
+        return windows.length > 0;
+      }
+
+      return windows.some((w) => {
+        return !w.is_skip_taskbar();
+      });
     }
 
     destroy() {
@@ -99,6 +112,13 @@ class WorkspaceLayout {
       }
     );
 
+    this._skipTaskbarModeChangedId = this.settings.connect(
+      "changed::skip-taskbar-mode",
+      () => {
+        this.add_panel_button();
+      }
+    );
+
     this.add_panel_button();
   }
 
@@ -109,6 +129,7 @@ class WorkspaceLayout {
     workspaceManager.disconnect(this._workspaceAddedId);
     workspaceManager.disconnect(this._workspaceRemovedId);
     this.settings.disconnect(this._panelPositionChangedId);
+    this.settings.disconnect(this._skipTaskbarModeChangedId);
   }
 
   add_panel_button() {
@@ -151,7 +172,11 @@ class WorkspaceLayout {
     for (; i < workspaceManager.get_n_workspaces(); i++) {
       let workspace = workspaceManager.get_workspace_by_index(i);
       if (workspace !== null) {
-        let indicator = new WorkspaceIndicator(workspace, i == active_index);
+        let indicator = new WorkspaceIndicator(
+          workspace,
+          i == active_index,
+          this.settings.get_boolean("skip-taskbar-mode")
+        );
 
         this.box_layout.add_actor(indicator);
         this.indicators.push(indicator);
