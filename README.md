@@ -20,7 +20,7 @@ glib-compile-schemas schemas
 2. zip up the contents
 
 ```shell
-zip -r improved-workspace-indicator@michaelaquilina.github.io.zip . --exclude=README.md --exclude=screenshot.png --exclude=.git/\*
+zip -r improved-workspace-indicator@michaelaquilina.github.io.zip . --exclude=README.md --exclude=.gitignore --exclude=screenshot.png --exclude=.git/\*
 ```
 
 3. upload a new version to https://extensions.gnome.org/upload/
