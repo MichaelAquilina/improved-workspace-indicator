@@ -16,5 +16,12 @@
         Set to true to ignore `is_skip_taskbar` windows when determining in-use workspaces. This includes hidden windows created by the desktop-icons-ng extension.
       </description>
     </key>
+    <key name="primary-workspace-mode" type="b">
+      <default>false</default>
+      <summary>Only Count Primary Monitor Windows.</summary>
+      <description>
+        Set to true to only count primary monitor windows when determining in-use workspaces.
+      </description>
+    </key>
   </schema>
 </schemalist>
