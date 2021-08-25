@@ -9,12 +9,11 @@ const workspaceManager = global.workspace_manager;
 
 let WorkspaceIndicator = GObject.registerClass(
   class WorkspaceIndicator extends St.Button {
-    _init(workspace, active, skip_taskbar_mode, primary_workspace_mode) {
+    _init(workspace, active, skip_taskbar_mode) {
       super._init();
       this.active = active;
       this.workspace = workspace;
       this.skip_taskbar_mode = skip_taskbar_mode;
-      this.primary_workspace_mode = primary_workspace_mode;
 
       // setup widgets
       this._widget = new St.Widget({
@@ -69,16 +68,12 @@ let WorkspaceIndicator = GObject.registerClass(
     has_user_window() {
       let windows = this.workspace.list_windows();
 
-      if (!this.skip_taskbar_mode && !this.primary_workspace_mode) {
+      if (!this.skip_taskbar_mode) {
         return windows.length > 0;
       }
 
       return windows.some((w) => {
-        let is_shown = !this.skip_taskbar_mode || !w.is_skip_taskbar();
-        let is_primary =
-          !this.primary_workspace_mode || w.is_on_primary_monitor();
-
-        return is_shown && is_primary;
+        return !w.is_skip_taskbar();
       });
     }
 
@@ -124,13 +119,6 @@ class WorkspaceLayout {
       }
     );
 
-    this._primaryWorkspaceModeChangedId = this.settings.connect(
-      "changed::primary-workspace-mode",
-      () => {
-        this.add_panel_button();
-      }
-    );
-
     this.add_panel_button();
   }
 
@@ -142,7 +130,6 @@ class WorkspaceLayout {
     workspaceManager.disconnect(this._workspaceRemovedId);
     this.settings.disconnect(this._panelPositionChangedId);
     this.settings.disconnect(this._skipTaskbarModeChangedId);
-    this.settings.disconnect(this._primaryWorkspaceModeChangedId);
   }
 
   add_panel_button() {
@@ -188,8 +175,7 @@ class WorkspaceLayout {
         let indicator = new WorkspaceIndicator(
           workspace,
           i == active_index,
-          this.settings.get_boolean("skip-taskbar-mode"),
-          this.settings.get_boolean("primary-workspace-mode")
+          this.settings.get_boolean("skip-taskbar-mode")
         );
 
         this.box_layout.add_actor(indicator);

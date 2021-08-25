@@ -102,30 +102,6 @@ function buildPrefsWidget() {
     Gio.SettingsBindFlags.DEFAULT
   );
 
-  // Primary Workspace Mode Selector
-
-  let primary_workspace_mode_label = new Gtk.Label({
-    label: "Only Count Primary Monitor Windows",
-    halign: Gtk.Align.START,
-    use_markup: true,
-  });
-
-  let primary_workspace_mode_toggle = new Gtk.Switch({
-    active: this.settings.get_boolean("primary-workspace-mode"),
-    halign: Gtk.Align.END,
-    visible: true,
-  });
-
-  prefsWidget.attach(primary_workspace_mode_label, 0, 3, 2, 1);
-  prefsWidget.attach(primary_workspace_mode_toggle, 2, 3, 2, 1);
-
-  this.settings.bind(
-    "primary-workspace-mode",
-    primary_workspace_mode_toggle,
-    "active",
-    Gio.SettingsBindFlags.DEFAULT
-  );
-
   // only gtk3 apps need to run show_all()
   if (ShellVersion < 40) {
     prefsWidget.show_all();
