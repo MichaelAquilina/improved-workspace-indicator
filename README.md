@@ -9,6 +9,10 @@ Namely:
 
 ![Screenshot](screenshot.png)
 
+## Installing from source
+
+Run `make install`
+
 ## Publishing a new version
 
 1. Compile the schema
