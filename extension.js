@@ -87,6 +87,9 @@ let WorkspaceIndicator = GObject.registerClass(
 
 class WorkspaceLayout {
   constructor() {
+  }
+
+  enable() {
     this.indicators = [];
     this.panel_button = null;
     this.box_layout = null;
@@ -96,15 +99,13 @@ class WorkspaceLayout {
       Gio.SettingsSchemaSource.get_default(),
       false
     );
-    this.settings = new Gio.Settings({
+    this.settings = ExtensionUtils.getSettings({
       settings_schema: gschema.lookup(
         "org.gnome.shell.extensions.improved-workspace-indicator",
         true
       ),
     });
-  }
 
-  enable() {
     this._panelPositionChangedId = this.settings.connect(
       "changed::panel-position",
       () => {
