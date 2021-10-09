@@ -86,8 +86,7 @@ let WorkspaceIndicator = GObject.registerClass(
 );
 
 class WorkspaceLayout {
-  constructor() {
-  }
+  constructor() {}
 
   enable() {
     this.indicators = [];
