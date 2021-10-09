@@ -99,12 +99,7 @@ class WorkspaceLayout {
       Gio.SettingsSchemaSource.get_default(),
       false
     );
-    this.settings = ExtensionUtils.getSettings({
-      settings_schema: gschema.lookup(
-        "org.gnome.shell.extensions.improved-workspace-indicator",
-        true
-      ),
-    });
+    this.settings = ExtensionUtils.getSettings();
 
     this._panelPositionChangedId = this.settings.connect(
       "changed::panel-position",

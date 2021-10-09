@@ -12,19 +12,7 @@ const Me = ExtensionUtils.getCurrentExtension();
 function init() {}
 
 function buildPrefsWidget() {
-  let gschema = Gio.SettingsSchemaSource.new_from_directory(
-    Me.dir.get_child("schemas").get_path(),
-    Gio.SettingsSchemaSource.get_default(),
-    false
-  );
-
-  this.settings = new Gio.Settings({
-    settings_schema: gschema.lookup(
-      "org.gnome.shell.extensions.improved-workspace-indicator",
-      true
-    ),
-  });
-
+  this.settings = ExtensionUtils.getSettings();
   let prefsWidget;
 
   // gtk4 apps do not have a margin property
