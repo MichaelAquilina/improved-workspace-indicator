@@ -3,6 +3,7 @@
   <enum id="org.gnome.shell.extensions.improved-workspace-indicator.position">
     <value value="0" nick="left"/>
     <value value="1" nick="right"/>
+    <value value="2" nick="center"/>
   </enum>
   <schema id="org.gnome.shell.extensions.improved-workspace-indicator" path="/org/gnome/shell/extensions/improved-workspace-indicator/">
     <key name="panel-position" enum="org.gnome.shell.extensions.improved-workspace-indicator.position">
