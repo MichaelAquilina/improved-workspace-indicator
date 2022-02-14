@@ -51,6 +51,7 @@ function buildPrefsWidget() {
   let panel_position_combo = new Gtk.ComboBoxText();
   panel_position_combo.append("left", "left");
   panel_position_combo.append("right", "right");
+  panel_position_combo.append("center", "center");
 
   panel_position_combo.active_id = this.settings.get_string("panel-position");
 
