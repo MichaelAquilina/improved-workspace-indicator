@@ -181,7 +181,7 @@ class WorkspaceLayout {
           workspace,
           i == active_index,
           this.settings.get_boolean("skip-taskbar-mode"),
-          this.settings.get_boolean("change-on-click"),
+          this.settings.get_boolean("change-on-click")
         );
 
         this.box_layout.add_actor(indicator);
