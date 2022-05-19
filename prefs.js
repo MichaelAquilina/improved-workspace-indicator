@@ -91,6 +91,29 @@ function buildPrefsWidget() {
     Gio.SettingsBindFlags.DEFAULT
   );
 
+  // Enable / Disable change on click
+
+  let change_on_click_label = new Gtk.Label({
+    label: "Change workspace on indicator click",
+    halign: Gtk.Align.START,
+  });
+
+  let change_on_click_toggle = new Gtk.Switch({
+    active: this.settings.get_boolean("change-on-click"),
+    halign: Gtk.Align.END,
+    visible: true,
+  });
+
+  prefsWidget.attach(change_on_click_label, 0, 3, 2, 1);
+  prefsWidget.attach(change_on_click_toggle, 2, 3, 2, 1);
+
+  this.settings.bind(
+    "change-on-click",
+    change_on_click_toggle,
+    "active",
+    Gio.SettingsBindFlags.DEFAULT
+  );
+
   // only gtk3 apps need to run show_all()
   if (ShellVersion < 40) {
     prefsWidget.show_all();

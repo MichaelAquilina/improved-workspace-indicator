@@ -9,7 +9,7 @@ const workspaceManager = global.workspace_manager;
 
 let WorkspaceIndicator = GObject.registerClass(
   class WorkspaceIndicator extends St.Button {
-    _init(workspace, active, skip_taskbar_mode) {
+    _init(workspace, active, skip_taskbar_mode, change_on_click) {
       super._init();
       this.active = active;
       this.workspace = workspace;
@@ -50,9 +50,12 @@ let WorkspaceIndicator = GObject.registerClass(
       this._windowRemovedId = this.workspace.connect("window-removed", () =>
         this.show_or_hide()
       );
-      this.connect("clicked", () =>
-        this.workspace.activate(global.get_current_time())
-      );
+
+      if (change_on_click) {
+        this.connect("clicked", () =>
+          this.workspace.activate(global.get_current_time())
+        );
+      }
 
       this.show_or_hide();
     }
@@ -113,6 +116,12 @@ class WorkspaceLayout {
         this.add_panel_button();
       }
     );
+    this._changeOnClickChangedId = this.settings.connect(
+      "changed::change-on-click",
+      () => {
+        this.add_panel_button();
+      }
+    );
 
     this.add_panel_button();
   }
@@ -125,6 +134,7 @@ class WorkspaceLayout {
     workspaceManager.disconnect(this._workspaceRemovedId);
     this.settings.disconnect(this._panelPositionChangedId);
     this.settings.disconnect(this._skipTaskbarModeChangedId);
+    this.settings.disconnect(this._changeOnClickChangedId);
   }
 
   add_panel_button() {
@@ -170,7 +180,8 @@ class WorkspaceLayout {
         let indicator = new WorkspaceIndicator(
           workspace,
           i == active_index,
-          this.settings.get_boolean("skip-taskbar-mode")
+          this.settings.get_boolean("skip-taskbar-mode"),
+          this.settings.get_boolean("change-on-click"),
         );
 
         this.box_layout.add_actor(indicator);
