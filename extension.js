@@ -29,7 +29,7 @@ let WorkspaceIndicator = GObject.registerClass(
       });
 
       if (this.active) {
-        this._statusLabel.add_style_class_name("active");
+        this._statusLabel.add_style_class_name("workspace-indicator-active");
       }
 
       this._widget.add_actor(this._statusLabel);

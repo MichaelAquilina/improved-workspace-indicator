@@ -25,6 +25,6 @@
   border-left-width: 1px;
 }
 
-.active {
+.workspace-indicator-active {
   background-color: rgba(20, 200, 200, 0.5);
 }
