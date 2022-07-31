@@ -78,6 +78,7 @@ function buildPrefsWidget() {
 
   let skip_taskbar_mode_toggle = new Gtk.Switch({
     active: this.settings.get_boolean("skip-taskbar-mode"),
+    valign: Gtk.Align.CENTER,
     halign: Gtk.Align.END,
     visible: true,
   });
