@@ -225,5 +225,14 @@ class WorkspaceLayout {
 }
 
 function init() {
+  let settings = ExtensionUtils.getSettings();
+
+  if (settings.get_string("custom-css-path") !== "") {
+    let themeContext = St.ThemeContext.get_for_stage(global.stage);
+    let themesLoaded = themeContext.get_theme().get_custom_stylesheets();
+      
+    themeContext.get_theme().unload_stylesheet(themesLoaded[0]);
+  }
+
   return new WorkspaceLayout();
 }
