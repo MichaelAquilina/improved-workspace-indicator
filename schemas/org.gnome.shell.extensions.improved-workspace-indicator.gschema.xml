@@ -24,5 +24,12 @@
         Set to true to change to the workspace number on indicator click. Set to false to disable any action on click.
       </description>
     </key>
+    <key name="custom-css-path" type="s">
+      <default>""</default>
+      <summary>Custom path to CSS stylesheet</summary>
+      <description>
+        Type here a custom path to your CSS stylesheet (must be full path eg. /home/user/...), or leave it empty to restore original style.
+      </description>
+    </key>
   </schema>
 </schemalist>

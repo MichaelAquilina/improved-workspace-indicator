@@ -95,13 +95,25 @@ class WorkspaceLayout {
     this.indicators = [];
     this.panel_button = null;
     this.box_layout = null;
+    this.themeContext = St.ThemeContext.get_for_stage(global.stage);
+    this.settings = ExtensionUtils.getSettings();
+
+    // Load custom CSS
+    this.css_file = null;
+
+    if (this.settings.get_string("custom-css-path") !== "") {
+      this.css_file = Gio.File.new_for_path(this.settings.get_string("custom-css-path"));
+      this.themeContext.get_theme().load_stylesheet(this.css_file);
+
+      this.themesLoaded = this.themeContext.get_theme().get_custom_stylesheets();
+      this.themeContext.get_theme().unload_stylesheet(this.themesLoaded[0]);
+    }
 
     let gschema = Gio.SettingsSchemaSource.new_from_directory(
       Me.dir.get_child("schemas").get_path(),
       Gio.SettingsSchemaSource.get_default(),
       false
     );
-    this.settings = ExtensionUtils.getSettings();
 
     this._panelPositionChangedId = this.settings.connect(
       "changed::panel-position",
@@ -135,6 +147,9 @@ class WorkspaceLayout {
     this.settings.disconnect(this._panelPositionChangedId);
     this.settings.disconnect(this._skipTaskbarModeChangedId);
     this.settings.disconnect(this._changeOnClickChangedId);
+    if (this.css_file !== null) {
+      this.themeContext.get_theme().unload_stylesheet(this.css_file);
+    }
   }
 
   add_panel_button() {
