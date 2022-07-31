@@ -2,6 +2,7 @@
 
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
+const GLib = imports.gi.GLib;
 
 const Config = imports.misc.config;
 const ShellVersion = parseFloat(Config.PACKAGE_VERSION);
@@ -113,6 +114,67 @@ function buildPrefsWidget() {
     "active",
     Gio.SettingsBindFlags.DEFAULT
   );
+
+  // Custom CSS stylesheet
+  let custom_css_box = new Gtk.Box({
+    orientation: Gtk.Orientation.HORIZONTAL,
+    css_classes: Array("linked"),
+    halign: Gtk.Align.END,
+  });
+
+  let custom_css_label = new Gtk.Label({
+    label: 
+      "Custom CSS stylesheet\r" + 
+      "<small>You need to reload the extension to see the changes.</small>",
+    halign: Gtk.Align.START,
+    use_markup: true,
+  });
+
+  let custom_css_entry = new Gtk.Entry();
+  let entry_buffer = custom_css_entry.get_buffer();
+
+  let custom_css_set_path = this.settings.get_string("custom-css-path");
+  entry_buffer.set_text(
+    custom_css_set_path, 
+    custom_css_set_path.length,
+  );
+
+  if (ShellVersion < 40) {
+    let custom_css_button_image = new Gtk.Image({
+      icon_name: "folder-symbolic",
+    });
+
+    var custom_css_button = new Gtk.Button({
+      image: custom_css_button_image,
+    });
+  } else {
+    var custom_css_button = new Gtk.Button({
+      icon_name: "folder-symbolic",
+    });
+  }
+
+  prefsWidget.connect('unrealize', () => {
+    let custom_css_dest = entry_buffer.get_text();
+    if (custom_css_dest !== this.settings.get_string("custom-css-path")) {
+      if (GLib.file_test(custom_css_dest, GLib.FileTest.IS_REGULAR) == true || custom_css_dest === "") {
+        this.settings.set_string(
+          "custom-css-path",
+          custom_css_dest,
+        );
+      }
+    }
+  });
+
+  if (ShellVersion < 40) {
+    custom_css_box.pack_end(custom_css_entry, false, false, 0);
+    custom_css_box.pack_end(custom_css_button, false, false, 0);
+  } else {
+    custom_css_box.append(custom_css_entry);
+    custom_css_box.append(custom_css_button);
+  }
+
+  prefsWidget.attach(custom_css_label, 0, 4, 2, 1);
+  prefsWidget.attach(custom_css_box, 2, 4, 2, 1);
 
   // only gtk3 apps need to run show_all()
   if (ShellVersion < 40) {
