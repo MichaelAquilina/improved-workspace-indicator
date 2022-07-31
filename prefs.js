@@ -139,6 +139,30 @@ function buildPrefsWidget() {
     custom_css_set_path.length,
   );
 
+  function filechooser_open() {
+    let dialog = new Gtk.FileChooserNative({
+      title: "Choose a valid CSS stylesheet file",
+      transient_for: null, // TODO: Change to global Gtk.Window object
+      action: Gtk.FileChooserAction.OPEN,
+    });
+    dialog.set_modal(true);
+
+    let css_filter = new Gtk.FileFilter();
+    css_filter.set_name("CSS stylesheet (*.css)");
+    css_filter.add_mime_type("text/css");
+    dialog.add_filter(css_filter);
+
+    dialog.connect('response', (self, response) => {
+      if (response === Gtk.ResponseType.ACCEPT) {
+        let gfile = dialog.get_file();
+        let file_path = gfile.get_path();
+        entry_buffer.set_text(file_path, file_path.length);
+      }
+      dialog.destroy();
+    });
+    dialog.show();
+  }
+
   if (ShellVersion < 40) {
     let custom_css_button_image = new Gtk.Image({
       icon_name: "folder-symbolic",
@@ -152,6 +176,10 @@ function buildPrefsWidget() {
       icon_name: "folder-symbolic",
     });
   }
+
+  custom_css_button.connect('clicked', () => {
+    filechooser_open();
+  });
 
   prefsWidget.connect('unrealize', () => {
     let custom_css_dest = entry_buffer.get_text();
