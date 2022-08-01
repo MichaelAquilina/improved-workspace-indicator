@@ -102,11 +102,13 @@ class WorkspaceLayout {
     this.css_file = null;
 
     if (this.settings.get_string("custom-css-path") !== "") {
+      this.themesLoaded = this.themeContext.get_theme().get_custom_stylesheets();
+      for (let i = 0; i < this.themesLoaded.length; i++) {
+        this.themeContext.get_theme().unload_stylesheet(this.themesLoaded[i]);
+      }
+
       this.css_file = Gio.File.new_for_path(this.settings.get_string("custom-css-path"));
       this.themeContext.get_theme().load_stylesheet(this.css_file);
-
-      this.themesLoaded = this.themeContext.get_theme().get_custom_stylesheets();
-      this.themeContext.get_theme().unload_stylesheet(this.themesLoaded[0]);
     }
 
     let gschema = Gio.SettingsSchemaSource.new_from_directory(
@@ -225,14 +227,5 @@ class WorkspaceLayout {
 }
 
 function init() {
-  let settings = ExtensionUtils.getSettings();
-
-  if (settings.get_string("custom-css-path") !== "") {
-    let themeContext = St.ThemeContext.get_for_stage(global.stage);
-    let themesLoaded = themeContext.get_theme().get_custom_stylesheets();
-      
-    themeContext.get_theme().unload_stylesheet(themesLoaded[0]);
-  }
-
   return new WorkspaceLayout();
 }
