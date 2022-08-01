@@ -125,13 +125,16 @@ function buildPrefsWidget() {
 
   let custom_css_label = new Gtk.Label({
     label: 
-      "Custom CSS stylesheet\r" + 
-      "<small>You need to reload the extension to see the changes.</small>",
+      "Custom CSS stylesheet\r" +
+      "<small>You need to reload this extension to see the changes.</small>",
     halign: Gtk.Align.START,
     use_markup: true,
   });
 
-  let custom_css_entry = new Gtk.Entry();
+  let custom_css_entry = new Gtk.Entry({
+    tooltip_text: "Remove path from entry box to restore a original style.",
+  });
+
   let entry_buffer = custom_css_entry.get_buffer();
 
   let custom_css_set_path = this.settings.get_string("custom-css-path");
