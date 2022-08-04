@@ -117,6 +117,7 @@ function buildPrefsWidget() {
   );
 
   // Custom CSS stylesheet
+
   let custom_css_box = new Gtk.Box({
     orientation: Gtk.Orientation.HORIZONTAL,
     css_classes: Array("linked"),
@@ -146,10 +147,10 @@ function buildPrefsWidget() {
   function filechooser_open() {
     let dialog = new Gtk.FileChooserNative({
       title: "Choose a valid CSS stylesheet file",
-      transient_for: null, // TODO: Change to global Gtk.Window object
+      transient_for: null, // TODO: Change it to preferences Adw.PreferencesWindow object
+      modal: true,
       action: Gtk.FileChooserAction.OPEN,
     });
-    dialog.set_modal(true);
 
     let css_filter = new Gtk.FileFilter();
     css_filter.set_name("CSS stylesheet (*.css)");
@@ -164,6 +165,7 @@ function buildPrefsWidget() {
       }
       dialog.destroy();
     });
+    dialog.ref(); // File chooser closes itself in nobody is holding its ref
     dialog.show();
   }
 
