@@ -118,11 +118,19 @@ function buildPrefsWidget() {
 
   // Custom CSS stylesheet
 
-  let custom_css_box = new Gtk.Box({
-    orientation: Gtk.Orientation.HORIZONTAL,
-    css_classes: Array("linked"),
-    halign: Gtk.Align.END,
-  });
+  if (ShellVersion < 42) {
+    var custom_css_box = new Gtk.Box({
+      orientation: Gtk.Orientation.HORIZONTAL,
+      spacing: 5,
+      halign: Gtk.Align.END,
+    });
+  } else {
+    var custom_css_box = new Gtk.Box({
+      orientation: Gtk.Orientation.HORIZONTAL,
+      css_classes: Array("linked"), // Style class in libadwaita
+      halign: Gtk.Align.END,
+    });
+  }
 
   let custom_css_label = new Gtk.Label({
     label: 
@@ -147,7 +155,7 @@ function buildPrefsWidget() {
   function filechooser_open() {
     let dialog = new Gtk.FileChooserNative({
       title: "Choose a valid CSS stylesheet file",
-      transient_for: null, // TODO: Change it to preferences Adw.PreferencesWindow object
+      transient_for: null, // TODO: Change it to Adw.PreferencesWindow/Gtk.Window object
       modal: true,
       action: Gtk.FileChooserAction.OPEN,
     });
@@ -165,7 +173,7 @@ function buildPrefsWidget() {
       }
       dialog.destroy();
     });
-    dialog.ref(); // File chooser closes itself in nobody is holding its ref
+    dialog.ref(); // File chooser closes itself if nobody is holding its ref
     dialog.show();
   }
 
