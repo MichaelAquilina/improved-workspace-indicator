@@ -118,16 +118,16 @@ function buildPrefsWidget() {
 
   // Custom CSS stylesheet
 
-  if (ShellVersion < 42) {
+  if (ShellVersion >= 42) {
     var custom_css_box = new Gtk.Box({
       orientation: Gtk.Orientation.HORIZONTAL,
-      spacing: 5,
+      css_classes: Array("linked"), // Style class in libadwaita
       halign: Gtk.Align.END,
     });
   } else {
     var custom_css_box = new Gtk.Box({
       orientation: Gtk.Orientation.HORIZONTAL,
-      css_classes: Array("linked"), // Style class in libadwaita
+      spacing: 5,
       halign: Gtk.Align.END,
     });
   }
