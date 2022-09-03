@@ -141,7 +141,6 @@ class WorkspaceLayout {
     workspaceManager.disconnect(this._workspaceRemovedId);
     workspaceManager.disconnect(this._workspaceCountChangedId);
     workspaceManager.disconnect(this._workspacesReorderedId);
-    workspaceManager.disconnect(this._dynamicWorkspacesSettingsChangedId);
     this.settings.disconnect(this._panelPositionChangedId);
     this.settings.disconnect(this._skipTaskbarModeChangedId);
     this.settings.disconnect(this._alwaysShowAllWorkspacesChangedId);
@@ -182,10 +181,6 @@ class WorkspaceLayout {
     );
     this._workspacesReorderedId = workspaceManager.connect_after(
       "workspaces-reordered",
-      this.clear_workspace_cache_and_add_indicators.bind(this)
-    );
-    this._dynamicWorkspacesSettingsChangedId = workspaceManager.connect_after(
-      "changed::dynamic-workspaces",
       this.clear_workspace_cache_and_add_indicators.bind(this)
     );
 
