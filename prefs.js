@@ -91,6 +91,32 @@ function buildPrefsWidget() {
     Gio.SettingsBindFlags.DEFAULT
   );
 
+  // Always Show All Workspaces Mode Selector
+
+  let always_show_all_workspaces_label = new Gtk.Label({
+    label:
+      "Always Show All Workspaces\r" +
+      "<small>Show all workspaces indicators, including those that do not contain any windows.</small>",
+    halign: Gtk.Align.START,
+    use_markup: true,
+  });
+
+  let always_show_all_workspaces_toggle = new Gtk.Switch({
+    active: this.settings.get_boolean("always-show-all-workspaces"),
+    halign: Gtk.Align.END,
+    visible: true,
+  });
+
+  prefsWidget.attach(always_show_all_workspaces_label, 0, 3, 2, 1);
+  prefsWidget.attach(always_show_all_workspaces_toggle, 2, 3, 2, 1);
+
+  this.settings.bind(
+    "always-show-all-workspaces",
+    always_show_all_workspaces_toggle,
+    "active",
+    Gio.SettingsBindFlags.DEFAULT
+  );
+
   // Enable / Disable change on click
 
   let change_on_click_label = new Gtk.Label({
@@ -104,8 +130,8 @@ function buildPrefsWidget() {
     visible: true,
   });
 
-  prefsWidget.attach(change_on_click_label, 0, 3, 2, 1);
-  prefsWidget.attach(change_on_click_toggle, 2, 3, 2, 1);
+  prefsWidget.attach(change_on_click_label, 0, 4, 2, 1);
+  prefsWidget.attach(change_on_click_toggle, 2, 4, 2, 1);
 
   this.settings.bind(
     "change-on-click",
