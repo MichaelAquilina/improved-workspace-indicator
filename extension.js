@@ -9,11 +9,12 @@ const workspaceManager = global.workspace_manager;
 
 let WorkspaceIndicator = GObject.registerClass(
   class WorkspaceIndicator extends St.Button {
-    _init(workspace, active, skip_taskbar_mode, change_on_click) {
+    _init(workspace, active, skip_taskbar_mode, always_show_all_workspaces, change_on_click) {
       super._init();
       this.active = active;
       this.workspace = workspace;
       this.skip_taskbar_mode = skip_taskbar_mode;
+      this.always_show_all_workspaces = always_show_all_workspaces;
 
       // setup widgets
       this._widget = new St.Widget({
@@ -61,7 +62,7 @@ let WorkspaceIndicator = GObject.registerClass(
     }
 
     show_or_hide() {
-      if (this.active || this.has_user_window()) {
+      if (this.active || this.has_user_window() || this.always_show_all_workspaces) {
         this.show();
       } else {
         this.hide();
@@ -116,6 +117,12 @@ class WorkspaceLayout {
         this.add_panel_button();
       }
     );
+    this._alwaysShowAllWorkspacesChangedId = this.settings.connect(
+      "changed::always-show-all-workspaces",
+      () => {
+        this.add_panel_button();
+      }
+    );
     this._changeOnClickChangedId = this.settings.connect(
       "changed::change-on-click",
       () => {
@@ -132,8 +139,11 @@ class WorkspaceLayout {
     workspaceManager.disconnect(this._workspaceSwitchedId);
     workspaceManager.disconnect(this._workspaceAddedId);
     workspaceManager.disconnect(this._workspaceRemovedId);
+    workspaceManager.disconnect(this._workspaceCountChangedId);
+    workspaceManager.disconnect(this._workspacesReorderedId);
     this.settings.disconnect(this._panelPositionChangedId);
     this.settings.disconnect(this._skipTaskbarModeChangedId);
+    this.settings.disconnect(this._alwaysShowAllWorkspacesChangedId);
     this.settings.disconnect(this._changeOnClickChangedId);
   }
 
@@ -163,9 +173,22 @@ class WorkspaceLayout {
     );
     this._workspaceRemovedId = workspaceManager.connect_after(
       "workspace-removed",
-      this.add_indicators.bind(this)
+      this.clear_workspace_cache_and_add_indicators.bind(this)
+    );
+    this._workspaceCountChangedId = workspaceManager.connect_after(
+      "notify::n-workspaces",
+      this.clear_workspace_cache_and_add_indicators.bind(this)
+    );
+    this._workspacesReorderedId = workspaceManager.connect_after(
+      "workspaces-reordered",
+      this.clear_workspace_cache_and_add_indicators.bind(this)
     );
 
+    this.add_indicators();
+  }
+
+  clear_workspace_cache_and_add_indicators() {
+    this.workspace_cache = {};
     this.add_indicators();
   }
 
@@ -174,13 +197,24 @@ class WorkspaceLayout {
     let active_index = workspaceManager.get_active_workspace_index();
     let i = 0;
 
+    if (this.workspace_cache == undefined || this.workspace_cache == null) {
+      this.workspace_cache = {};
+    }
+
     for (; i < workspaceManager.get_n_workspaces(); i++) {
       let workspace = workspaceManager.get_workspace_by_index(i);
+
+      if (this.workspace_cache[i] == undefined || this.workspace_cache[i] == null || workspace != null) {
+        this.workspace_cache[i] = workspace;
+      }
+      workspace = this.workspace_cache[i];
+
       if (workspace !== null) {
         let indicator = new WorkspaceIndicator(
           workspace,
           i == active_index,
           this.settings.get_boolean("skip-taskbar-mode"),
+          this.settings.get_boolean("always-show-all-workspaces"),
           this.settings.get_boolean("change-on-click")
         );
 

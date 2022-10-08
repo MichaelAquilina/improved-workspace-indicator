@@ -17,6 +17,13 @@
         Set to true to ignore `is_skip_taskbar` windows when determining in-use workspaces. This includes hidden windows created by the desktop-icons-ng extension.
       </description>
     </key>
+    <key name="always-show-all-workspaces" type="b">
+      <default>false</default>
+      <summary>Always Show All Workspaces.</summary>
+      <description>
+        Set to true to ensure all workspace indicators are always shown, even when workspaces do not contain any windows.
+      </description>
+    </key>
     <key name="change-on-click" type="b">
       <default>true</default>
       <summary>Change Workspaces on indicator click.</summary>
