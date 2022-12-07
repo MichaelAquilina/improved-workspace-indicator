@@ -132,6 +132,7 @@ class WorkspaceLayout {
     workspaceManager.disconnect(this._workspaceSwitchedId);
     workspaceManager.disconnect(this._workspaceAddedId);
     workspaceManager.disconnect(this._workspaceRemovedId);
+    workspaceManager.disconnect(this._workspaceReordered);
     this.settings.disconnect(this._panelPositionChangedId);
     this.settings.disconnect(this._skipTaskbarModeChangedId);
     this.settings.disconnect(this._changeOnClickChangedId);
@@ -163,6 +164,10 @@ class WorkspaceLayout {
     );
     this._workspaceRemovedId = workspaceManager.connect_after(
       "workspace-removed",
+      this.add_indicators.bind(this)
+    );
+    this._workspaceReordered = workspaceManager.connect_after(
+      "workspaces-reordered",
       this.add_indicators.bind(this)
     );
 
