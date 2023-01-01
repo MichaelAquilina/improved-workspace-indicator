@@ -24,5 +24,12 @@
         Set to true to change to the workspace number on indicator click. Set to false to disable any action on click.
       </description>
     </key>
+    <key name="change-on-scroll" type="b">
+      <default>true</default>
+      <summary>Change Workspaces on indicator mouse-scroll.</summary>
+      <description>
+        Set to true to change to the workspace number by mouse-scroll over indicator.
+      </description>
+    </key>
   </schema>
 </schemalist>

@@ -138,6 +138,13 @@ class WorkspaceLayout {
         this.add_panel_button();
       }
     );
+    //scroll to change workspace
+    this._changeOnScrollChangedId = this.settings.connect(
+      "changed::change-on-scroll",
+      () => {
+        this.add_panel_button();
+      }
+    );
 
     this.add_panel_button();
   }
@@ -163,17 +170,20 @@ class WorkspaceLayout {
     this.box_layout = new St.BoxLayout();
     this.panel_button.add_actor(this.box_layout);
 
-    // log('\n\n--- panel_button connect scroll-event')
-    this.panel_button.connect('scroll-event', (a, e) => {
-      // print(`--- panel_button: scroll ${a}, ${e}, type: ${e.type()}, direction:, ${e.get_scroll_direction()}`)
+    let change_on_scroll = this.settings.get_boolean("change-on-scroll");
+    // log(`\n\n--- panel_button connect scroll-event: ${change_on_scroll}`);
+    if (change_on_scroll) {
+      this.panel_button.connect('scroll-event', (a, e) => {
+        // print(`--- panel_button: scroll ${a}, ${e}, type: ${e.type()}, direction:, ${e.get_scroll_direction()}`)
 
-      let d = e.get_scroll_direction()
-      if (d == Clutter.ScrollDirection.UP){
-        workspace_switch(-1)
-      }else if (d == Clutter.ScrollDirection.DOWN){
-        workspace_switch(+1)
-      }
-    });
+        let d = e.get_scroll_direction();
+        if (d == Clutter.ScrollDirection.UP){
+          workspace_switch(-1)
+        }else if (d == Clutter.ScrollDirection.DOWN){
+          workspace_switch(+1)
+        }
+      });
+    }
 
     let [position] = this.settings.get_value("panel-position").get_string();
     Main.panel.addToStatusArea(
