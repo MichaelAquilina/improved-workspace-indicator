@@ -7,6 +7,22 @@ const PanelMenu = imports.ui.panelMenu;
 const Me = ExtensionUtils.getCurrentExtension();
 const workspaceManager = global.workspace_manager;
 
+
+// workspace switch to previous / next
+const scroll_wrap = false;
+function workspace_switch(d){
+  let i = workspaceManager.get_active_workspace_index()
+  let n = workspaceManager.get_n_workspaces()
+
+  let x = (i+d+n)%n
+  if (!scroll_wrap){
+    if(i+d>=n || i+d<0) x = i
+  }
+
+  // print(`=== workspace_switch ${d}: ${i} => ${x}`)
+  workspaceManager.get_workspace_by_index(x).activate(global.get_current_time())
+}
+
 let WorkspaceIndicator = GObject.registerClass(
   class WorkspaceIndicator extends St.Button {
     _init(workspace, active, skip_taskbar_mode, change_on_click) {
@@ -146,6 +162,18 @@ class WorkspaceLayout {
     );
     this.box_layout = new St.BoxLayout();
     this.panel_button.add_actor(this.box_layout);
+
+    // log('\n\n--- panel_button connect scroll-event')
+    this.panel_button.connect('scroll-event', (a, e) => {
+      // print(`--- panel_button: scroll ${a}, ${e}, type: ${e.type()}, direction:, ${e.get_scroll_direction()}`)
+
+      let d = e.get_scroll_direction()
+      if (d == Clutter.ScrollDirection.UP){
+        workspace_switch(-1)
+      }else if (d == Clutter.ScrollDirection.DOWN){
+        workspace_switch(+1)
+      }
+    });
 
     let [position] = this.settings.get_value("panel-position").get_string();
     Main.panel.addToStatusArea(
