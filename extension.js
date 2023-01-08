@@ -9,7 +9,7 @@ const workspaceManager = global.workspace_manager;
 
 
 // workspace switch to previous / next
-const scroll_wrap = false;
+let scroll_wrap = false;
 function workspace_switch(d){
   let i = workspaceManager.get_active_workspace_index()
   let n = workspaceManager.get_n_workspaces()
@@ -143,6 +143,15 @@ class WorkspaceLayout {
       "changed::change-on-scroll",
       () => {
         this.add_panel_button();
+      }
+    );
+    //scroll wraparound
+    scroll_wrap = this.settings.get_boolean("wrap-scroll");
+    this._changeOnScrollChangedId = this.settings.connect(
+      "changed::wrap-scroll",
+      () => {
+        scroll_wrap = this.settings.get_boolean("wrap-scroll")
+        // log(`wrap-scoll changed: ${scroll_wrap}`)
       }
     );
 

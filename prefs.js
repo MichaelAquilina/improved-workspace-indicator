@@ -135,6 +135,27 @@ function buildPrefsWidget() {
     Gio.SettingsBindFlags.DEFAULT
   );
 
+  //scroll wraparound
+  let wrap_scroll_label = new Gtk.Label({
+    label: "Wraparound workspace when mouse-scroll",
+    halign: Gtk.Align.START,
+  });
+  let wrap_scroll_toggle = new Gtk.Switch({
+    active: this.settings.get_boolean("wrap-scroll"),
+    halign: Gtk.Align.END,
+    visible: true,
+  });
+  
+  prefsWidget.attach(wrap_scroll_label, 0, 5, 2, 1);
+  prefsWidget.attach(wrap_scroll_toggle, 2, 5, 2, 1);
+  
+  this.settings.bind(
+    "wrap-scroll",
+    wrap_scroll_toggle,
+    "active",
+    Gio.SettingsBindFlags.DEFAULT
+  );
+
   // only gtk3 apps need to run show_all()
   if (ShellVersion < 40) {
     prefsWidget.show_all();
