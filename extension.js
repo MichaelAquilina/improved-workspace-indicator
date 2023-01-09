@@ -9,8 +9,7 @@ const workspaceManager = global.workspace_manager;
 
 
 // workspace switch to previous / next
-let scroll_wrap = false;
-function workspace_switch(step){
+function workspace_switch(step, scroll_wrap){
   let active_index = workspaceManager.get_active_workspace_index()
   let workspace_count = workspaceManager.get_n_workspaces()
 
@@ -145,11 +144,10 @@ class WorkspaceLayout {
       }
     );
     //scroll wraparound
-    scroll_wrap = this.settings.get_boolean("wrap-scroll");
     this._changeOnScrollChangedId = this.settings.connect(
       "changed::wrap-scroll",
       () => {
-        scroll_wrap = this.settings.get_boolean("wrap-scroll")
+        this.add_panel_button();
       }
     );
 
@@ -179,13 +177,15 @@ class WorkspaceLayout {
 
     let change_on_scroll = this.settings.get_boolean("change-on-scroll");
     if (change_on_scroll) {
+      let scroll_wrap = this.settings.get_boolean("wrap-scroll");
       this.panel_button.connect('scroll-event', (_, event) => {
-        let direction = event.get_scroll_direction()
-        if (direction == Clutter.ScrollDirection.UP) {
-          workspace_switch(-1)
-        }else if (direction == Clutter.ScrollDirection.DOWN){
-          workspace_switch(+1)
+        let switch_step = 0
+        switch(event.get_scroll_direction()){
+          case Clutter.ScrollDirection.UP:   switch_step = -1; break;
+          case Clutter.ScrollDirection.DOWN: switch_step = +1; break;
         }
+
+        if (switch_step) workspace_switch(switch_step, scroll_wrap)
       });
     }
 
