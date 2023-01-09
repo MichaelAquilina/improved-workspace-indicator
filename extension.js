@@ -10,16 +10,16 @@ const workspaceManager = global.workspace_manager;
 
 // workspace switch to previous / next
 let scroll_wrap = false;
-function workspace_switch(d){
-  let i = workspaceManager.get_active_workspace_index()
-  let n = workspaceManager.get_n_workspaces()
+function workspace_switch(step){
+  let active_index = workspaceManager.get_active_workspace_index()
+  let workspace_count = workspaceManager.get_n_workspaces()
 
-  let x = (i+d+n)%n
-  if (!scroll_wrap){
-    if(i+d>=n || i+d<0) x = i
+  let target_index = (active_index + step + workspace_count) % workspace_count
+  if (!scroll_wrap) {
+    if (active_index + step >= workspace_count || active_index + step < 0) target_index = active_index
   }
 
-  workspaceManager.get_workspace_by_index(x).activate(global.get_current_time())
+  workspaceManager.get_workspace_by_index(target_index).activate(global.get_current_time())
 }
 
 let WorkspaceIndicator = GObject.registerClass(
@@ -179,11 +179,11 @@ class WorkspaceLayout {
 
     let change_on_scroll = this.settings.get_boolean("change-on-scroll");
     if (change_on_scroll) {
-      this.panel_button.connect('scroll-event', (a, e) => {
-        let d = e.get_scroll_direction();
-        if (d == Clutter.ScrollDirection.UP){
+      this.panel_button.connect('scroll-event', (_, event) => {
+        let direction = event.get_scroll_direction()
+        if (direction == Clutter.ScrollDirection.UP) {
           workspace_switch(-1)
-        }else if (d == Clutter.ScrollDirection.DOWN){
+        }else if (direction == Clutter.ScrollDirection.DOWN){
           workspace_switch(+1)
         }
       });
