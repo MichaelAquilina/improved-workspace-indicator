@@ -124,10 +124,10 @@ function buildPrefsWidget() {
     halign: Gtk.Align.END,
     visible: true,
   });
-  
+
   prefsWidget.attach(change_on_scroll_label, 0, 4, 2, 1);
   prefsWidget.attach(change_on_scroll_toggle, 2, 4, 2, 1);
-  
+
   this.settings.bind(
     "change-on-scroll",
     change_on_scroll_toggle,
@@ -145,10 +145,10 @@ function buildPrefsWidget() {
     halign: Gtk.Align.END,
     visible: true,
   });
-  
+
   prefsWidget.attach(wrap_scroll_label, 0, 5, 2, 1);
   prefsWidget.attach(wrap_scroll_toggle, 2, 5, 2, 1);
-  
+
   this.settings.bind(
     "wrap-scroll",
     wrap_scroll_toggle,

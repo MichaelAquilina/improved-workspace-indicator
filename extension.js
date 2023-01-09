@@ -7,18 +7,20 @@ const PanelMenu = imports.ui.panelMenu;
 const Me = ExtensionUtils.getCurrentExtension();
 const workspaceManager = global.workspace_manager;
 
-
 // workspace switch to previous / next
-function workspace_switch(step, scroll_wrap){
-  let active_index = workspaceManager.get_active_workspace_index()
-  let workspace_count = workspaceManager.get_n_workspaces()
+function workspace_switch(step, scroll_wrap) {
+  let active_index = workspaceManager.get_active_workspace_index();
+  let workspace_count = workspaceManager.get_n_workspaces();
 
-  let target_index = (active_index + step + workspace_count) % workspace_count
+  let target_index = (active_index + step + workspace_count) % workspace_count;
   if (!scroll_wrap) {
-    if (active_index + step >= workspace_count || active_index + step < 0) target_index = active_index
+    if (active_index + step >= workspace_count || active_index + step < 0)
+      target_index = active_index;
   }
 
-  workspaceManager.get_workspace_by_index(target_index).activate(global.get_current_time())
+  workspaceManager
+    .get_workspace_by_index(target_index)
+    .activate(global.get_current_time());
 }
 
 let WorkspaceIndicator = GObject.registerClass(
@@ -178,14 +180,18 @@ class WorkspaceLayout {
     let change_on_scroll = this.settings.get_boolean("change-on-scroll");
     if (change_on_scroll) {
       let scroll_wrap = this.settings.get_boolean("wrap-scroll");
-      this.panel_button.connect('scroll-event', (_, event) => {
-        let switch_step = 0
-        switch(event.get_scroll_direction()){
-          case Clutter.ScrollDirection.UP:   switch_step = -1; break;
-          case Clutter.ScrollDirection.DOWN: switch_step = +1; break;
+      this.panel_button.connect("scroll-event", (_, event) => {
+        let switch_step = 0;
+        switch (event.get_scroll_direction()) {
+          case Clutter.ScrollDirection.UP:
+            switch_step = -1;
+            break;
+          case Clutter.ScrollDirection.DOWN:
+            switch_step = +1;
+            break;
         }
 
-        if (switch_step) workspace_switch(switch_step, scroll_wrap)
+        if (switch_step) workspace_switch(switch_step, scroll_wrap);
       });
     }
 
