@@ -19,7 +19,6 @@ function workspace_switch(d){
     if(i+d>=n || i+d<0) x = i
   }
 
-  // print(`=== workspace_switch ${d}: ${i} => ${x}`)
   workspaceManager.get_workspace_by_index(x).activate(global.get_current_time())
 }
 
@@ -151,7 +150,6 @@ class WorkspaceLayout {
       "changed::wrap-scroll",
       () => {
         scroll_wrap = this.settings.get_boolean("wrap-scroll")
-        // log(`wrap-scoll changed: ${scroll_wrap}`)
       }
     );
 
@@ -180,11 +178,8 @@ class WorkspaceLayout {
     this.panel_button.add_actor(this.box_layout);
 
     let change_on_scroll = this.settings.get_boolean("change-on-scroll");
-    // log(`\n\n--- panel_button connect scroll-event: ${change_on_scroll}`);
     if (change_on_scroll) {
       this.panel_button.connect('scroll-event', (a, e) => {
-        // print(`--- panel_button: scroll ${a}, ${e}, type: ${e.type()}, direction:, ${e.get_scroll_direction()}`)
-
         let d = e.get_scroll_direction();
         if (d == Clutter.ScrollDirection.UP){
           workspace_switch(-1)
