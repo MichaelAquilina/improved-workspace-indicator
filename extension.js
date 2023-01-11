@@ -7,6 +7,22 @@ const PanelMenu = imports.ui.panelMenu;
 const Me = ExtensionUtils.getCurrentExtension();
 const workspaceManager = global.workspace_manager;
 
+// workspace switch to previous / next
+function workspace_switch(step, scroll_wrap) {
+  let active_index = workspaceManager.get_active_workspace_index();
+  let workspace_count = workspaceManager.get_n_workspaces();
+
+  let target_index = (active_index + step + workspace_count) % workspace_count;
+  if (!scroll_wrap) {
+    if (active_index + step >= workspace_count || active_index + step < 0)
+      target_index = active_index;
+  }
+
+  workspaceManager
+    .get_workspace_by_index(target_index)
+    .activate(global.get_current_time());
+}
+
 let WorkspaceIndicator = GObject.registerClass(
   class WorkspaceIndicator extends St.Button {
     _init(workspace, active, skip_taskbar_mode, change_on_click) {
@@ -136,6 +152,20 @@ class WorkspaceLayout {
         this.add_panel_button();
       }
     );
+    //scroll to change workspace
+    this._changeOnScrollChangedId = this.settings.connect(
+      "changed::change-on-scroll",
+      () => {
+        this.add_panel_button();
+      }
+    );
+    //scroll wraparound
+    this._changeOnScrollChangedId = this.settings.connect(
+      "changed::wrap-scroll",
+      () => {
+        this.add_panel_button();
+      }
+    );
 
     this.add_panel_button();
   }
@@ -146,6 +176,7 @@ class WorkspaceLayout {
     workspaceManager.disconnect(this._workspaceSwitchedId);
     workspaceManager.disconnect(this._workspaceAddedId);
     workspaceManager.disconnect(this._workspaceRemovedId);
+    workspaceManager.disconnect(this._workspaceReordered);
     this.settings.disconnect(this._panelPositionChangedId);
     this.settings.disconnect(this._skipTaskbarModeChangedId);
     this.settings.disconnect(this._changeOnClickChangedId);
@@ -162,6 +193,24 @@ class WorkspaceLayout {
     );
     this.box_layout = new St.BoxLayout();
     this.panel_button.add_actor(this.box_layout);
+
+    let change_on_scroll = this.settings.get_boolean("change-on-scroll");
+    if (change_on_scroll) {
+      let scroll_wrap = this.settings.get_boolean("wrap-scroll");
+      this.panel_button.connect("scroll-event", (_, event) => {
+        let switch_step = 0;
+        switch (event.get_scroll_direction()) {
+          case Clutter.ScrollDirection.UP:
+            switch_step = -1;
+            break;
+          case Clutter.ScrollDirection.DOWN:
+            switch_step = +1;
+            break;
+        }
+
+        if (switch_step) workspace_switch(switch_step, scroll_wrap);
+      });
+    }
 
     let [position] = this.settings.get_value("panel-position").get_string();
     Main.panel.addToStatusArea(
@@ -180,6 +229,10 @@ class WorkspaceLayout {
     );
     this._workspaceRemovedId = workspaceManager.connect_after(
       "workspace-removed",
+      this.add_indicators.bind(this)
+    );
+    this._workspaceReordered = workspaceManager.connect_after(
+      "workspaces-reordered",
       this.add_indicators.bind(this)
     );
 

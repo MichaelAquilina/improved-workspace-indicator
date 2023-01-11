@@ -116,6 +116,51 @@ function buildPrefsWidget() {
     Gio.SettingsBindFlags.DEFAULT
   );
 
+  // Scroll to change workspace
+
+  let change_on_scroll_label = new Gtk.Label({
+    label: "Change workspace on indicator mouse-scroll",
+    halign: Gtk.Align.START,
+  });
+
+  let change_on_scroll_toggle = new Gtk.Switch({
+    active: this.settings.get_boolean("change-on-scroll"),
+    halign: Gtk.Align.END,
+    visible: true,
+  });
+
+  prefsWidget.attach(change_on_scroll_label, 0, 4, 2, 1);
+  prefsWidget.attach(change_on_scroll_toggle, 2, 4, 2, 1);
+
+  this.settings.bind(
+    "change-on-scroll",
+    change_on_scroll_toggle,
+    "active",
+    Gio.SettingsBindFlags.DEFAULT
+  );
+
+  // Scroll wraparound
+
+  let wrap_scroll_label = new Gtk.Label({
+    label: "Wraparound workspace when mouse-scroll",
+    halign: Gtk.Align.START,
+  });
+  let wrap_scroll_toggle = new Gtk.Switch({
+    active: this.settings.get_boolean("wrap-scroll"),
+    halign: Gtk.Align.END,
+    visible: true,
+  });
+
+  prefsWidget.attach(wrap_scroll_label, 0, 5, 2, 1);
+  prefsWidget.attach(wrap_scroll_toggle, 2, 5, 2, 1);
+
+  this.settings.bind(
+    "wrap-scroll",
+    wrap_scroll_toggle,
+    "active",
+    Gio.SettingsBindFlags.DEFAULT
+  );
+
   // Custom CSS stylesheet
 
   if (ShellVersion >= 42) {
@@ -144,18 +189,18 @@ function buildPrefsWidget() {
     tooltip_text: "Remove path from entry box to restore a original style.",
   });
 
-  let entry_buffer = custom_css_entry.get_buffer();
+  let css_entry_buffer = custom_css_entry.get_buffer();
 
   let custom_css_set_path = this.settings.get_string("custom-css-path");
-  entry_buffer.set_text(
+  css_entry_buffer.set_text(
     custom_css_set_path, 
     custom_css_set_path.length,
   );
 
-  function filechooser_open() {
+  function css_filechooser_open() {
     let dialog = new Gtk.FileChooserNative({
       title: "Choose a valid CSS stylesheet file",
-      transient_for: null, // TODO: Change it to Adw.PreferencesWindow/Gtk.Window object
+      transient_for: null,
       modal: true,
       action: Gtk.FileChooserAction.OPEN,
     });
@@ -169,7 +214,7 @@ function buildPrefsWidget() {
       if (response === Gtk.ResponseType.ACCEPT) {
         let gfile = dialog.get_file();
         let file_path = gfile.get_path();
-        entry_buffer.set_text(file_path, file_path.length);
+        css_entry_buffer.set_text(file_path, file_path.length);
       }
       dialog.destroy();
     });
@@ -192,11 +237,11 @@ function buildPrefsWidget() {
   }
 
   custom_css_button.connect('clicked', () => {
-    filechooser_open();
+    css_filechooser_open();
   });
 
   prefsWidget.connect('unrealize', () => {
-    let custom_css_dest = entry_buffer.get_text();
+    let custom_css_dest = css_entry_buffer.get_text();
     if (custom_css_dest !== this.settings.get_string("custom-css-path")) {
       if (GLib.file_test(custom_css_dest, GLib.FileTest.IS_REGULAR) == true || custom_css_dest === "") {
         this.settings.set_string(
@@ -215,8 +260,9 @@ function buildPrefsWidget() {
     custom_css_box.append(custom_css_button);
   }
 
-  prefsWidget.attach(custom_css_label, 0, 4, 2, 1);
-  prefsWidget.attach(custom_css_box, 2, 4, 2, 1);
+  prefsWidget.attach(custom_css_label, 0, 6, 2, 1);
+  prefsWidget.attach(custom_css_box, 2, 6, 2, 1);
+
 
   // only gtk3 apps need to run show_all()
   if (ShellVersion < 40) {
