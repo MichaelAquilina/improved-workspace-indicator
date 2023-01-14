@@ -168,12 +168,14 @@ function buildPrefsWidget() {
       orientation: Gtk.Orientation.HORIZONTAL,
       css_classes: Array("linked"), // Style class in libadwaita
       halign: Gtk.Align.END,
+      valign: Gtk.Align.CENTER,
     });
   } else {
     var custom_css_box = new Gtk.Box({
       orientation: Gtk.Orientation.HORIZONTAL,
       spacing: 5,
       halign: Gtk.Align.END,
+      valign: Gtk.Align.CENTER,
     });
   }
 
@@ -183,6 +185,36 @@ function buildPrefsWidget() {
       "<small>You need to reload this extension to see the changes.</small>",
     halign: Gtk.Align.START,
     use_markup: true,
+  });
+
+  if (ShellVersion < 40) {
+    let custom_css_help_image = new Gtk.Image({
+      icon_name: "dialog-information-symbolic",
+    });
+
+    var custom_css_help = new Gtk.Button({
+      image: custom_css_help_image,
+      tooltip_text: "Click for more information",
+      halign: Gtk.Align.END,
+      valign: Gtk.Align.CENTER,
+    });
+  } else {
+    var custom_css_help = new Gtk.Button({
+      icon_name: "dialog-information-symbolic",
+      tooltip_text: "Click for more information",
+      halign: Gtk.Align.END,
+      valign: Gtk.Align.CENTER,
+    });
+  }
+
+  custom_css_help.connect('clicked', () => {
+    Gio.Subprocess.new(
+      Array(
+        "xdg-open",
+        "https://github.com/MichaelAquilina/improved-workspace-indicator#how-to-use-custom-css-stylesheet"
+      ),
+      Gio.SubprocessFlags.NONE,
+    );
   });
 
   let custom_css_entry = new Gtk.Entry({
@@ -261,6 +293,7 @@ function buildPrefsWidget() {
   }
 
   prefsWidget.attach(custom_css_label, 0, 6, 2, 1);
+  prefsWidget.attach(custom_css_help, 1, 6, 1, 1);
   prefsWidget.attach(custom_css_box, 2, 6, 2, 1);
 
 
