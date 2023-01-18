@@ -9,6 +9,11 @@ Namely:
 
 ![Screenshot](screenshot.png)
 
+## Installing via Gnome Extensions 
+
+Visit Gnome Extensions website [Here](https://extensions.gnome.org/extension/3968/improved-workspace-indicator/) and click switch icon
+
+
 ## Installing from source
 
 Run `make install`
