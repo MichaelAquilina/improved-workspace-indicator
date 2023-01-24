@@ -13,6 +13,7 @@ As a base, use [stylesheet.css](../stylesheet.css), as it has all classes needed
 <summary>Which parts of a stylesheet you would want to modify:</summary>
 
 #### Workspace indicator
+
 ```css
 .panel-workspace-indicator,
 .panel-workspace-indicator-box .workspace {
@@ -20,16 +21,19 @@ As a base, use [stylesheet.css](../stylesheet.css), as it has all classes needed
   background-color: rgba(200, 200, 200, 0.5);
 }
 ```
+
 ###### Located in lines [13-17](https://github.com/MichaelAquilina/improved-workspace-indicator/blob/b03afe9d3fe562c418ff25967e61eded67bf17c6/stylesheet.css#L13-L17)
 
 In this part you can customize a look of a single workspace indicator, as well as colors for an inactive workspace.
 
 #### Active workspace
+
 ```css
 .workspace-indicator-active {
   background-color: rgba(20, 200, 200, 0.5);
 }
 ```
+
 ###### Located in lines [28-30](https://github.com/MichaelAquilina/improved-workspace-indicator/blob/b03afe9d3fe562c418ff25967e61eded67bf17c6/stylesheet.css#L28-L30)
 
 Here you can change properties of an active workspace indicator.

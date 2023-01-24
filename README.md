@@ -17,7 +17,7 @@ Run `make install`
 
 ## How to customize the look
 
-*Refer to the [Custom CSS Guide](docs/how_to_custom_css.md) if you want to customize the look of Improved Workspace Indicator.*
+_Refer to the [Custom CSS Guide](docs/how_to_custom_css.md) if you want to customize the look of Improved Workspace Indicator._
 
 ## Publishing a new version
 

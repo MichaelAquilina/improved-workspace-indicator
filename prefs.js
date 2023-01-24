@@ -180,7 +180,7 @@ function buildPrefsWidget() {
   }
 
   let custom_css_label = new Gtk.Label({
-    label: 
+    label:
       "Custom CSS stylesheet\r" +
       "<small>You need to reload this extension to see the changes.</small>",
     halign: Gtk.Align.START,
@@ -207,13 +207,13 @@ function buildPrefsWidget() {
     });
   }
 
-  custom_css_help.connect('clicked', () => {
+  custom_css_help.connect("clicked", () => {
     Gio.Subprocess.new(
       Array(
         "xdg-open",
         "https://github.com/MichaelAquilina/improved-workspace-indicator#how-to-use-custom-css-stylesheet"
       ),
-      Gio.SubprocessFlags.NONE,
+      Gio.SubprocessFlags.NONE
     );
   });
 
@@ -224,10 +224,7 @@ function buildPrefsWidget() {
   let css_entry_buffer = custom_css_entry.get_buffer();
 
   let custom_css_set_path = this.settings.get_string("custom-css-path");
-  css_entry_buffer.set_text(
-    custom_css_set_path, 
-    custom_css_set_path.length,
-  );
+  css_entry_buffer.set_text(custom_css_set_path, custom_css_set_path.length);
 
   function css_filechooser_open() {
     let dialog = new Gtk.FileChooserNative({
@@ -242,7 +239,7 @@ function buildPrefsWidget() {
     css_filter.add_mime_type("text/css");
     dialog.add_filter(css_filter);
 
-    dialog.connect('response', (self, response) => {
+    dialog.connect("response", (self, response) => {
       if (response === Gtk.ResponseType.ACCEPT) {
         let gfile = dialog.get_file();
         let file_path = gfile.get_path();
@@ -268,18 +265,18 @@ function buildPrefsWidget() {
     });
   }
 
-  custom_css_button.connect('clicked', () => {
+  custom_css_button.connect("clicked", () => {
     css_filechooser_open();
   });
 
-  prefsWidget.connect('unrealize', () => {
+  prefsWidget.connect("unrealize", () => {
     let custom_css_dest = css_entry_buffer.get_text();
     if (custom_css_dest !== this.settings.get_string("custom-css-path")) {
-      if (GLib.file_test(custom_css_dest, GLib.FileTest.IS_REGULAR) == true || custom_css_dest === "") {
-        this.settings.set_string(
-          "custom-css-path",
-          custom_css_dest,
-        );
+      if (
+        GLib.file_test(custom_css_dest, GLib.FileTest.IS_REGULAR) == true ||
+        custom_css_dest === ""
+      ) {
+        this.settings.set_string("custom-css-path", custom_css_dest);
       }
     }
   });
@@ -295,7 +292,6 @@ function buildPrefsWidget() {
   prefsWidget.attach(custom_css_label, 0, 6, 2, 1);
   prefsWidget.attach(custom_css_help, 1, 6, 1, 1);
   prefsWidget.attach(custom_css_box, 2, 6, 2, 1);
-
 
   // only gtk3 apps need to run show_all()
   if (ShellVersion < 40) {

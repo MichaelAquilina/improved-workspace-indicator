@@ -122,7 +122,9 @@ class WorkspaceLayout {
 
     if (this.custom_css_path !== "") {
       if (GLib.file_test(this.custom_css_path, GLib.FileTest.EXISTS) == true) {
-        this.themesLoaded = this.themeContext.get_theme().get_custom_stylesheets();
+        this.themesLoaded = this.themeContext
+          .get_theme()
+          .get_custom_stylesheets();
 
         for (let i = 0; i < this.themesLoaded.length; i++) {
           this.themeContext.get_theme().unload_stylesheet(this.themesLoaded[i]);
@@ -131,10 +133,7 @@ class WorkspaceLayout {
         this.css_file = Gio.File.new_for_path(this.custom_css_path);
         this.themeContext.get_theme().load_stylesheet(this.css_file);
       } else {
-        this.settings.set_string(
-          "custom-css-path",
-          "",
-        );
+        this.settings.set_string("custom-css-path", "");
       }
     }
 
