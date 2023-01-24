@@ -21,7 +21,7 @@ You can use a custom CSS stylesheet to change a look of workspace indicator widg
 
 #### 1. Write your own CSS stylesheet
 
-As a base, use [stylesheet.css](./stylesheet.css), as it has all classes needed to create a custom stylesheet for IWI.
+As a base, use [stylesheet.css](./stylesheet.css), as it has all classes needed to create a custom stylesheet for Improved Workspace Indicator.
 
 > **Note**
 > Creating custom CSS stylesheets might require from you some actual knowledge of CSS. You can check [this](https://developer.mozilla.org/en-US/docs/Learn/CSS/First_steps) tutorial on MDN to learn basics of CSS.
@@ -55,11 +55,11 @@ Here you can change properties of an active workspace indicator.
 
 #### 2. Choose your custom stylesheet in extension's preferences
 
-Open IWI's preferences and locate `Custom CSS stylesheet` row. Now either click on folder button which will open a file chooser dialog, or paste a path of your stylesheet file into textbox.
+Open extension's preferences and locate `Custom CSS stylesheet` row. Now either click on folder button which will open a file chooser dialog, or paste a path of your stylesheet file into textbox.
 
 #### 3. Reload an extension
 
-Close IWI's preferences window and re-enable extension by toggling an switch in extensions manager.
+Close preferences window and re-enable extension by toggling an switch in extensions manager.
 
 > **Note**
 > You can disable custom CSS by removing an path from textbox in preferences window.
