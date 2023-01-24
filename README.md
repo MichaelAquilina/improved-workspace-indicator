@@ -1,4 +1,5 @@
 ## Improved Workspace Indicator
+
 [<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" alt="Get it on GNOME Extensions" height="100" align="middle">][gextension]
 
 Gnome shell extension that provides a workspace indicator more similar to i3/sway
@@ -9,7 +10,6 @@ Namely:
 - it highlights the currently active workspace
 
 ![Screenshot](screenshot.png)
-
 
 ## Installing from source
 
