@@ -24,16 +24,23 @@
         Set to true to change to the workspace number on indicator click. Set to false to disable any action on click.
       </description>
     </key>
+    <key name="custom-css-path" type="s">
+      <default>""</default>
+      <summary>Path to custom CSS stylesheet.</summary>
+      <description>
+        Enter a path to your custom CSS stylehseet (must be full path eg. /home/user/...), or leave it empty to restore original style.
+      </description>
+    </key>
     <key name="change-on-scroll" type="b">
       <default>true</default>
-      <summary>Change Workspaces on indicator mouse-scroll.</summary>
+      <summary>Change workspaces on indicator mouse-scroll.</summary>
       <description>
         Set to true to change to the workspace number by mouse-scroll over indicator.
       </description>
     </key>
     <key name="wrap-scroll" type="b">
       <default>true</default>
-      <summary>workspace wraparound with mouse-scroll</summary>
+      <summary>Workspace wraparound with mouse-scroll.</summary>
       <description>
         Set to true to loop back at first/last workspace when mouse-scroll.
       </description>

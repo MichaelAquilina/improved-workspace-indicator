@@ -1,4 +1,4 @@
-const { Clutter, Gio, GObject, Meta, St } = imports.gi;
+const { Clutter, Gio, GObject, GLib, Meta, St } = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Main = imports.ui.main;
@@ -111,13 +111,38 @@ class WorkspaceLayout {
     this.indicators = [];
     this.panel_button = null;
     this.box_layout = null;
+    this.themeContext = St.ThemeContext.get_for_stage(global.stage);
+    this.settings = ExtensionUtils.getSettings();
+
+    // Custom CSS file
+    this.css_file = null;
+
+    // Custom CSS stylesheet path
+    this.custom_css_path = this.settings.get_string("custom-css-path");
+
+    if (this.custom_css_path !== "") {
+      if (GLib.file_test(this.custom_css_path, GLib.FileTest.EXISTS) == true) {
+        this.themesLoaded = this.themeContext.get_theme().get_custom_stylesheets();
+
+        for (let i = 0; i < this.themesLoaded.length; i++) {
+          this.themeContext.get_theme().unload_stylesheet(this.themesLoaded[i]);
+        }
+
+        this.css_file = Gio.File.new_for_path(this.custom_css_path);
+        this.themeContext.get_theme().load_stylesheet(this.css_file);
+      } else {
+        this.settings.set_string(
+          "custom-css-path",
+          "",
+        );
+      }
+    }
 
     let gschema = Gio.SettingsSchemaSource.new_from_directory(
       Me.dir.get_child("schemas").get_path(),
       Gio.SettingsSchemaSource.get_default(),
       false
     );
-    this.settings = ExtensionUtils.getSettings();
 
     this._panelPositionChangedId = this.settings.connect(
       "changed::panel-position",
@@ -166,6 +191,9 @@ class WorkspaceLayout {
     this.settings.disconnect(this._panelPositionChangedId);
     this.settings.disconnect(this._skipTaskbarModeChangedId);
     this.settings.disconnect(this._changeOnClickChangedId);
+    if (this.css_file !== null) {
+      this.themeContext.get_theme().unload_stylesheet(this.css_file);
+    }
   }
 
   add_panel_button() {
