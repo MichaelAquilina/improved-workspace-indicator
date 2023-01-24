@@ -4,7 +4,7 @@ You can use custom CSS stylesheets to change a look of workspace indicator widge
 
 #### 1. Write your own CSS stylesheet
 
-As a base, use [stylesheet.css](./stylesheet.css), as it has all classes needed to create a custom stylesheet for Improved Workspace Indicator.
+As a base, use [stylesheet.css](../stylesheet.css), as it has all classes needed to create a custom stylesheet for Improved Workspace Indicator.
 
 > **Note**
 > Creating custom CSS stylesheets might require from you some actual knowledge of CSS. You can check [this](https://developer.mozilla.org/en-US/docs/Learn/CSS/First_steps) tutorial on MDN to learn basics of CSS.
