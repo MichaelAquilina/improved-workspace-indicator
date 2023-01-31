@@ -208,12 +208,9 @@ function buildPrefsWidget() {
   }
 
   custom_css_help.connect("clicked", () => {
-    Gio.Subprocess.new(
-      Array(
-        "xdg-open",
-        "https://github.com/MichaelAquilina/improved-workspace-indicator#how-to-use-custom-css-stylesheet"
-      ),
-      Gio.SubprocessFlags.NONE
+    console.log("Wow, hello world");
+    GLib.spawn_command_line_sync(
+      "xdg-open https://github.com/MichaelAquilina/improved-workspace-indicator/blob/main/docs/how_to_custom_css.md",
     );
   });
 

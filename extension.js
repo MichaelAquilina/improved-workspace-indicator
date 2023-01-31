@@ -193,6 +193,7 @@ class WorkspaceLayout {
     if (this.css_file !== null) {
       this.themeContext.get_theme().unload_stylesheet(this.css_file);
     }
+    this.settings = null;
   }
 
   add_panel_button() {
