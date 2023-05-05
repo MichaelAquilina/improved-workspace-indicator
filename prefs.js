@@ -208,7 +208,6 @@ function buildPrefsWidget() {
   }
 
   custom_css_help.connect("clicked", () => {
-    console.log("Wow, hello world");
     GLib.spawn_command_line_sync(
       "xdg-open https://github.com/MichaelAquilina/improved-workspace-indicator/blob/main/docs/how_to_custom_css.md",
     );
