@@ -10,6 +10,10 @@
       <default>'right'</default>
       <summary>Choose the position of the workspace indicator.</summary>
     </key>
+    <key name="panel-position-order" type="i">
+      <default>0</default>
+      <summary>Choose the order of the workspace indicator.</summary>
+    </key>
     <key name="skip-taskbar-mode" type="b">
       <default>true</default>
       <summary>Ignore Taskbar-Skipped Windows.</summary>
