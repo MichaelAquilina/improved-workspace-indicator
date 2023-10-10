@@ -49,6 +49,13 @@ function buildPrefsWidget() {
     halign: Gtk.Align.START,
   });
 
+  let panel_position_box = new Gtk.Box({
+    orientation: Gtk.Orientation.HORIZONTAL,
+    spacing: 5,
+    halign: Gtk.Align.END,
+    valign: Gtk.Align.CENTER,
+  });
+
   let panel_position_combo = new Gtk.ComboBoxText();
   panel_position_combo.append("left", "left");
   panel_position_combo.append("right", "right");
@@ -56,8 +63,13 @@ function buildPrefsWidget() {
 
   panel_position_combo.active_id = this.settings.get_string("panel-position");
 
-  prefsWidget.attach(panel_position_label, 0, 1, 2, 1);
-  prefsWidget.attach(panel_position_combo, 2, 1, 2, 1);
+  let panel_position_order_spin_button = new Gtk.SpinButton();
+  panel_position_order_spin_button.set_range(0, 10);
+  panel_position_order_spin_button.set_increments(1, 1);
+
+  panel_position_order_spin_button.set_value(
+    this.settings.get_string("panel-position-order")
+  );
 
   this.settings.bind(
     "panel-position",
@@ -65,6 +77,19 @@ function buildPrefsWidget() {
     "active_id",
     Gio.SettingsBindFlags.DEFAULT
   );
+
+  this.settings.bind(
+    "panel-position-order",
+    panel_position_order_spin_button,
+    "value",
+    Gio.SettingsBindFlags.DEFAULT
+  );
+
+  panel_position_box.append(panel_position_combo);
+  panel_position_box.append(panel_position_order_spin_button);
+
+  prefsWidget.attach(panel_position_label, 0, 1, 2, 1);
+  prefsWidget.attach(panel_position_box, 2, 1, 2, 1);
 
   // Skip Taskbar Mode Selector
 
@@ -209,7 +234,7 @@ function buildPrefsWidget() {
 
   custom_css_help.connect("clicked", () => {
     GLib.spawn_command_line_sync(
-      "xdg-open https://github.com/MichaelAquilina/improved-workspace-indicator/blob/main/docs/how_to_custom_css.md",
+      "xdg-open https://github.com/MichaelAquilina/improved-workspace-indicator/blob/main/docs/how_to_custom_css.md"
     );
   });
 

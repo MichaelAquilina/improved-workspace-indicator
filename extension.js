@@ -150,6 +150,13 @@ class WorkspaceLayout {
       }
     );
 
+    this._panelPositionOrderChanged = this.settings.connect(
+      "changed::panel-position-order",
+      () => {
+        this.add_panel_button();
+      }
+    );
+
     this._skipTaskbarModeChangedId = this.settings.connect(
       "changed::skip-taskbar-mode",
       () => {
@@ -202,7 +209,9 @@ class WorkspaceLayout {
       0.0,
       _("Improved Workspace Indicator")
     );
-    this.box_layout = new St.BoxLayout();
+    this.box_layout = new St.BoxLayout({
+      style_class: "panel-workspace-container",
+    });
     this.panel_button.add_actor(this.box_layout);
 
     let change_on_scroll = this.settings.get_boolean("change-on-scroll");
@@ -224,10 +233,11 @@ class WorkspaceLayout {
     }
 
     let [position] = this.settings.get_value("panel-position").get_string();
+    let positionOrder = this.settings.get_int("panel-position-order");
     Main.panel.addToStatusArea(
       "improved-workspace-indicator",
       this.panel_button,
-      0,
+      positionOrder,
       position
     );
     this._workspaceSwitchedId = workspaceManager.connect_after(
