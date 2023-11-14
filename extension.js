@@ -1,10 +1,15 @@
-const { Clutter, Gio, GObject, GLib, Meta, St } = imports.gi;
+import Clutter from 'gi://Clutter'
+import GObject from 'gi://GObject'
+import Gio from 'gi://Gio'
+import GLib from 'gi://GLib'
+import Meta from 'gi://Meta'
+import St from 'gi://St'
+import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 
-const ExtensionUtils = imports.misc.extensionUtils;
-const Main = imports.ui.main;
-const PanelMenu = imports.ui.panelMenu;
 
-const Me = ExtensionUtils.getCurrentExtension();
+import * as Main from 'resource:///org/gnome/shell/ui/main.js'
+import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js'
+
 const workspaceManager = global.workspace_manager;
 
 // workspace switch to previous / next
@@ -104,15 +109,14 @@ let WorkspaceIndicator = GObject.registerClass(
   }
 );
 
-class WorkspaceLayout {
-  constructor() {}
+export default class WorkspaceLayout  extends Extension{
 
   enable() {
     this.indicators = [];
     this.panel_button = null;
     this.box_layout = null;
     this.themeContext = St.ThemeContext.get_for_stage(global.stage);
-    this.settings = ExtensionUtils.getSettings();
+    this.settings = this.getSettings();
 
     // Custom CSS file
     this.css_file = null;
@@ -138,7 +142,7 @@ class WorkspaceLayout {
     }
 
     let gschema = Gio.SettingsSchemaSource.new_from_directory(
-      Me.dir.get_child("schemas").get_path(),
+      this.dir.get_child("schemas").get_path(),
       Gio.SettingsSchemaSource.get_default(),
       false
     );
