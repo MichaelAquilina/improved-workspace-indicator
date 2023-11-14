@@ -110,6 +110,7 @@ let WorkspaceIndicator = GObject.registerClass(
 );
 
 export default class WorkspaceLayout  extends Extension{
+  constructor() {};
 
   enable() {
     this.indicators = [];
