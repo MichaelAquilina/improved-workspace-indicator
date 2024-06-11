@@ -1,14 +1,13 @@
-import Clutter from 'gi://Clutter'
-import GObject from 'gi://GObject'
-import Gio from 'gi://Gio'
-import GLib from 'gi://GLib'
-import Meta from 'gi://Meta'
-import St from 'gi://St'
-import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
+import Clutter from "gi://Clutter";
+import GObject from "gi://GObject";
+import Gio from "gi://Gio";
+import GLib from "gi://GLib";
+import Meta from "gi://Meta";
+import St from "gi://St";
+import { Extension } from "resource:///org/gnome/shell/extensions/extension.js";
 
-
-import * as Main from 'resource:///org/gnome/shell/ui/main.js'
-import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js'
+import * as Main from "resource:///org/gnome/shell/ui/main.js";
+import * as PanelMenu from "resource:///org/gnome/shell/ui/panelMenu.js";
 
 const workspaceManager = global.workspace_manager;
 
@@ -66,15 +65,15 @@ let WorkspaceIndicator = GObject.registerClass(
 
       // Connect signals
       this._windowAddedId = this.workspace.connect("window-added", () =>
-        this.show_or_hide()
+        this.show_or_hide(),
       );
       this._windowRemovedId = this.workspace.connect("window-removed", () =>
-        this.show_or_hide()
+        this.show_or_hide(),
       );
 
       if (change_on_click) {
         this.connect("clicked", () =>
-          this.workspace.activate(global.get_current_time())
+          this.workspace.activate(global.get_current_time()),
         );
       }
 
@@ -106,10 +105,10 @@ let WorkspaceIndicator = GObject.registerClass(
       this.workspace.disconnect(this._windowAddedId);
       super.destroy();
     }
-  }
+  },
 );
 
-export default class WorkspaceLayout  extends Extension{
+export default class WorkspaceLayout extends Extension {
   constructor(metadata) {
     super(metadata);
   }
@@ -147,41 +146,41 @@ export default class WorkspaceLayout  extends Extension{
     let gschema = Gio.SettingsSchemaSource.new_from_directory(
       this.dir.get_child("schemas").get_path(),
       Gio.SettingsSchemaSource.get_default(),
-      false
+      false,
     );
 
     this._panelPositionChangedId = this.settings.connect(
       "changed::panel-position",
       () => {
         this.add_panel_button();
-      }
+      },
     );
 
     this._skipTaskbarModeChangedId = this.settings.connect(
       "changed::skip-taskbar-mode",
       () => {
         this.add_panel_button();
-      }
+      },
     );
     this._changeOnClickChangedId = this.settings.connect(
       "changed::change-on-click",
       () => {
         this.add_panel_button();
-      }
+      },
     );
     //scroll to change workspace
     this._changeOnScrollChangedId = this.settings.connect(
       "changed::change-on-scroll",
       () => {
         this.add_panel_button();
-      }
+      },
     );
     //scroll wraparound
     this._changeOnScrollChangedId = this.settings.connect(
       "changed::wrap-scroll",
       () => {
         this.add_panel_button();
-      }
+      },
     );
 
     this.add_panel_button();
@@ -207,7 +206,7 @@ export default class WorkspaceLayout  extends Extension{
     this.destroy_panel_button();
     this.panel_button = new PanelMenu.Button(
       0.0,
-      _("Improved Workspace Indicator")
+      _("Improved Workspace Indicator"),
     );
     this.box_layout = new St.BoxLayout();
     this.panel_button.add_child(this.box_layout);
@@ -235,23 +234,23 @@ export default class WorkspaceLayout  extends Extension{
       "improved-workspace-indicator",
       this.panel_button,
       0,
-      position
+      position,
     );
     this._workspaceSwitchedId = workspaceManager.connect_after(
       "workspace-switched",
-      this.add_indicators.bind(this)
+      this.add_indicators.bind(this),
     );
     this._workspaceAddedId = workspaceManager.connect_after(
       "workspace-added",
-      this.add_indicators.bind(this)
+      this.add_indicators.bind(this),
     );
     this._workspaceRemovedId = workspaceManager.connect_after(
       "workspace-removed",
-      this.add_indicators.bind(this)
+      this.add_indicators.bind(this),
     );
     this._workspaceReordered = workspaceManager.connect_after(
       "workspaces-reordered",
-      this.add_indicators.bind(this)
+      this.add_indicators.bind(this),
     );
 
     this.add_indicators();
@@ -268,7 +267,7 @@ export default class WorkspaceLayout  extends Extension{
           workspace,
           i == active_index,
           this.settings.get_boolean("skip-taskbar-mode"),
-          this.settings.get_boolean("change-on-click")
+          this.settings.get_boolean("change-on-click"),
         );
 
         this.box_layout.add_child(indicator);

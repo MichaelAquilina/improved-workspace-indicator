@@ -1,14 +1,17 @@
 "use strict";
 
-import GLib from 'gi://GLib'
-import Gio from 'gi://Gio'
-import Gtk from 'gi://Gtk'
-import Adw from 'gi://Adw';
+import GLib from "gi://GLib";
+import Gio from "gi://Gio";
+import Gtk from "gi://Gtk";
+import Adw from "gi://Adw";
 
-import * as Config from 'resource:///org/gnome/Shell/Extensions/js/misc/config.js';
+import * as Config from "resource:///org/gnome/Shell/Extensions/js/misc/config.js";
 const ShellVersion = parseFloat(Config.PACKAGE_VERSION);
 
-import { ExtensionPreferences, gettext as _ } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
+import {
+  ExtensionPreferences,
+  gettext as _,
+} from "resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js";
 
 export default class WorkspaceLayoutPref extends ExtensionPreferences {
   fillPreferencesWindow(window) {
@@ -16,7 +19,7 @@ export default class WorkspaceLayoutPref extends ExtensionPreferences {
     const page = new Adw.PreferencesPage();
 
     const group = new Adw.PreferencesGroup({
-      title: _('Group Title'),
+      title: _("Group Title"),
     });
     let prefsWidget;
 
@@ -50,7 +53,8 @@ export default class WorkspaceLayoutPref extends ExtensionPreferences {
     panel_position_combo.append("right", "right");
     panel_position_combo.append("center", "center");
 
-    panel_position_combo.active_id = window.settings.get_string("panel-position");
+    panel_position_combo.active_id =
+      window.settings.get_string("panel-position");
 
     prefsWidget.attach(panel_position_label, 0, 1, 2, 1);
     prefsWidget.attach(panel_position_combo, 2, 1, 2, 1);
@@ -59,7 +63,7 @@ export default class WorkspaceLayoutPref extends ExtensionPreferences {
       "panel-position",
       panel_position_combo,
       "active_id",
-      Gio.SettingsBindFlags.DEFAULT
+      Gio.SettingsBindFlags.DEFAULT,
     );
 
     // Skip Taskbar Mode Selector
@@ -86,7 +90,7 @@ export default class WorkspaceLayoutPref extends ExtensionPreferences {
       "skip-taskbar-mode",
       skip_taskbar_mode_toggle,
       "active",
-      Gio.SettingsBindFlags.DEFAULT
+      Gio.SettingsBindFlags.DEFAULT,
     );
 
     // Enable / Disable change on click
@@ -109,7 +113,7 @@ export default class WorkspaceLayoutPref extends ExtensionPreferences {
       "change-on-click",
       change_on_click_toggle,
       "active",
-      Gio.SettingsBindFlags.DEFAULT
+      Gio.SettingsBindFlags.DEFAULT,
     );
 
     // Scroll to change workspace
@@ -132,7 +136,7 @@ export default class WorkspaceLayoutPref extends ExtensionPreferences {
       "change-on-scroll",
       change_on_scroll_toggle,
       "active",
-      Gio.SettingsBindFlags.DEFAULT
+      Gio.SettingsBindFlags.DEFAULT,
     );
 
     // Scroll wraparound
@@ -154,7 +158,7 @@ export default class WorkspaceLayoutPref extends ExtensionPreferences {
       "wrap-scroll",
       wrap_scroll_toggle,
       "active",
-      Gio.SettingsBindFlags.DEFAULT
+      Gio.SettingsBindFlags.DEFAULT,
     );
 
     // Custom CSS stylesheet
