@@ -13,7 +13,6 @@ import { ExtensionPreferences, gettext as _ } from 'resource:///org/gnome/Shell/
 export default class WorkspaceLayoutPref extends ExtensionPreferences {
   fillPreferencesWindow(window) {
     window.settings = this.getSettings();
-    // this.settings = ExtensionUtils.getSettings();
     const page = new Adw.PreferencesPage();
 
     const group = new Adw.PreferencesGroup({
@@ -22,22 +21,14 @@ export default class WorkspaceLayoutPref extends ExtensionPreferences {
     let prefsWidget;
 
     // gtk4 apps do not have a margin property
-    if (ShellVersion >= 40) {
-      prefsWidget = new Gtk.Grid({
-        margin_start: 18,
-        margin_end: 18,
-        margin_top: 18,
-        margin_bottom: 18,
-        column_spacing: 12,
-        row_spacing: 12,
-      });
-    } else {
-      prefsWidget = new Gtk.Grid({
-        margin: 18,
-        column_spacing: 12,
-        row_spacing: 12,
-      });
-    }
+    prefsWidget = new Gtk.Grid({
+      margin_start: 18,
+      margin_end: 18,
+      margin_top: 18,
+      margin_bottom: 18,
+      column_spacing: 12,
+      row_spacing: 12,
+    });
 
     let title = new Gtk.Label({
       label: "<b>Improved Workspace Indicator Preferences</b>",
@@ -168,21 +159,12 @@ export default class WorkspaceLayoutPref extends ExtensionPreferences {
 
     // Custom CSS stylesheet
 
-    if (ShellVersion >= 42) {
-      var custom_css_box = new Gtk.Box({
-        orientation: Gtk.Orientation.HORIZONTAL,
-        css_classes: Array("linked"), // Style class in libadwaita
-        halign: Gtk.Align.END,
-        valign: Gtk.Align.CENTER,
-      });
-    } else {
-      var custom_css_box = new Gtk.Box({
-        orientation: Gtk.Orientation.HORIZONTAL,
-        spacing: 5,
-        halign: Gtk.Align.END,
-        valign: Gtk.Align.CENTER,
-      });
-    }
+    var custom_css_box = new Gtk.Box({
+      orientation: Gtk.Orientation.HORIZONTAL,
+      css_classes: Array("linked"), // Style class in libadwaita
+      halign: Gtk.Align.END,
+      valign: Gtk.Align.CENTER,
+    });
 
     let custom_css_label = new Gtk.Label({
       label:
@@ -192,25 +174,12 @@ export default class WorkspaceLayoutPref extends ExtensionPreferences {
       use_markup: true,
     });
 
-    if (ShellVersion < 40) {
-      let custom_css_help_image = new Gtk.Image({
-        icon_name: "dialog-information-symbolic",
-      });
-
-      var custom_css_help = new Gtk.Button({
-        image: custom_css_help_image,
-        tooltip_text: "Click for more information",
-        halign: Gtk.Align.END,
-        valign: Gtk.Align.CENTER,
-      });
-    } else {
-      var custom_css_help = new Gtk.Button({
-        icon_name: "dialog-information-symbolic",
-        tooltip_text: "Click for more information",
-        halign: Gtk.Align.END,
-        valign: Gtk.Align.CENTER,
-      });
-    }
+    var custom_css_help = new Gtk.Button({
+      icon_name: "dialog-information-symbolic",
+      tooltip_text: "Click for more information",
+      halign: Gtk.Align.END,
+      valign: Gtk.Align.CENTER,
+    });
 
     custom_css_help.connect("clicked", () => {
       GLib.spawn_command_line_sync(
@@ -282,29 +251,16 @@ export default class WorkspaceLayoutPref extends ExtensionPreferences {
       }
     });
 
-    if (ShellVersion < 40) {
-      custom_css_box.pack_end(custom_css_entry, false, false, 0);
-      custom_css_box.pack_end(custom_css_button, false, false, 0);
-    } else {
-      custom_css_box.append(custom_css_entry);
-      custom_css_box.append(custom_css_button);
-    }
+    custom_css_box.append(custom_css_entry);
+    custom_css_box.append(custom_css_button);
 
     prefsWidget.attach(custom_css_label, 0, 6, 2, 1);
     prefsWidget.attach(custom_css_help, 1, 6, 1, 1);
     prefsWidget.attach(custom_css_box, 2, 6, 2, 1);
 
-    // only gtk3 apps need to run show_all()
-    if (ShellVersion < 40) {
-      prefsWidget.show_all();
-    }
-
-
     group.add(prefsWidget);
     page.add(group);
 
     window.add(page);
-
   }
 }
-
