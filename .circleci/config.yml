@@ -4,7 +4,7 @@ version: 2
 jobs:
   lint:
     docker:
-      - image: "node:12"
+      - image: "node:18"
     steps:
       - checkout
       - run:
