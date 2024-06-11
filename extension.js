@@ -1,10 +1,15 @@
-const { Clutter, Gio, GObject, GLib, Meta, St } = imports.gi;
+import Clutter from 'gi://Clutter'
+import GObject from 'gi://GObject'
+import Gio from 'gi://Gio'
+import GLib from 'gi://GLib'
+import Meta from 'gi://Meta'
+import St from 'gi://St'
+import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 
-const ExtensionUtils = imports.misc.extensionUtils;
-const Main = imports.ui.main;
-const PanelMenu = imports.ui.panelMenu;
 
-const Me = ExtensionUtils.getCurrentExtension();
+import * as Main from 'resource:///org/gnome/shell/ui/main.js'
+import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js'
+
 const workspaceManager = global.workspace_manager;
 
 // workspace switch to previous / next
@@ -48,7 +53,7 @@ let WorkspaceIndicator = GObject.registerClass(
         this._statusLabel.add_style_class_name("workspace-indicator-active");
       }
 
-      this._widget.add_actor(this._statusLabel);
+      this._widget.add_child(this._statusLabel);
 
       this._thumbnailsBox = new St.BoxLayout({
         style_class: "panel-workspace-indicator-box",
@@ -56,8 +61,8 @@ let WorkspaceIndicator = GObject.registerClass(
         reactive: true,
       });
 
-      this._widget.add_actor(this._thumbnailsBox);
-      this.add_actor(this._widget);
+      this._widget.add_child(this._thumbnailsBox);
+      this.add_child(this._widget);
 
       // Connect signals
       this._windowAddedId = this.workspace.connect("window-added", () =>
@@ -104,15 +109,17 @@ let WorkspaceIndicator = GObject.registerClass(
   }
 );
 
-class WorkspaceLayout {
-  constructor() {}
+export default class WorkspaceLayout  extends Extension{
+  constructor(metadata) {
+    super(metadata);
+  }
 
   enable() {
     this.indicators = [];
     this.panel_button = null;
     this.box_layout = null;
     this.themeContext = St.ThemeContext.get_for_stage(global.stage);
-    this.settings = ExtensionUtils.getSettings();
+    this.settings = this.getSettings();
 
     // Custom CSS file
     this.css_file = null;
@@ -138,7 +145,7 @@ class WorkspaceLayout {
     }
 
     let gschema = Gio.SettingsSchemaSource.new_from_directory(
-      Me.dir.get_child("schemas").get_path(),
+      this.dir.get_child("schemas").get_path(),
       Gio.SettingsSchemaSource.get_default(),
       false
     );
@@ -203,7 +210,7 @@ class WorkspaceLayout {
       _("Improved Workspace Indicator")
     );
     this.box_layout = new St.BoxLayout();
-    this.panel_button.add_actor(this.box_layout);
+    this.panel_button.add_child(this.box_layout);
 
     let change_on_scroll = this.settings.get_boolean("change-on-scroll");
     if (change_on_scroll) {
@@ -253,9 +260,8 @@ class WorkspaceLayout {
   add_indicators() {
     this.destroy_indicators();
     let active_index = workspaceManager.get_active_workspace_index();
-    let i = 0;
 
-    for (; i < workspaceManager.get_n_workspaces(); i++) {
+    for (let i = 0; i < workspaceManager.get_n_workspaces(); i++) {
       let workspace = workspaceManager.get_workspace_by_index(i);
       if (workspace !== null) {
         let indicator = new WorkspaceIndicator(
@@ -265,7 +271,7 @@ class WorkspaceLayout {
           this.settings.get_boolean("change-on-click")
         );
 
-        this.box_layout.add_actor(indicator);
+        this.box_layout.add_child(indicator);
         this.indicators.push(indicator);
       }
     }
