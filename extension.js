@@ -53,7 +53,7 @@ let WorkspaceIndicator = GObject.registerClass(
         this._statusLabel.add_style_class_name("workspace-indicator-active");
       }
 
-      this._widget.add_actor(this._statusLabel);
+      this._widget.add_child(this._statusLabel);
 
       this._thumbnailsBox = new St.BoxLayout({
         style_class: "panel-workspace-indicator-box",
@@ -61,8 +61,8 @@ let WorkspaceIndicator = GObject.registerClass(
         reactive: true,
       });
 
-      this._widget.add_actor(this._thumbnailsBox);
-      this.add_actor(this._widget);
+      this._widget.add_child(this._thumbnailsBox);
+      this.add_child(this._widget);
 
       // Connect signals
       this._windowAddedId = this.workspace.connect("window-added", () =>
@@ -110,7 +110,9 @@ let WorkspaceIndicator = GObject.registerClass(
 );
 
 export default class WorkspaceLayout  extends Extension{
-  constructor() {}
+  constructor(metadata) {
+    super(metadata);
+  }
 
   enable() {
     this.indicators = [];
@@ -208,7 +210,7 @@ export default class WorkspaceLayout  extends Extension{
       _("Improved Workspace Indicator")
     );
     this.box_layout = new St.BoxLayout();
-    this.panel_button.add_actor(this.box_layout);
+    this.panel_button.add_child(this.box_layout);
 
     let change_on_scroll = this.settings.get_boolean("change-on-scroll");
     if (change_on_scroll) {
@@ -258,9 +260,8 @@ export default class WorkspaceLayout  extends Extension{
   add_indicators() {
     this.destroy_indicators();
     let active_index = workspaceManager.get_active_workspace_index();
-    let i = 0;
 
-    for (; i < workspaceManager.get_n_workspaces(); i++) {
+    for (let i = 0; i < workspaceManager.get_n_workspaces(); i++) {
       let workspace = workspaceManager.get_workspace_by_index(i);
       if (workspace !== null) {
         let indicator = new WorkspaceIndicator(
@@ -270,7 +271,7 @@ export default class WorkspaceLayout  extends Extension{
           this.settings.get_boolean("change-on-click")
         );
 
-        this.box_layout.add_actor(indicator);
+        this.box_layout.add_child(indicator);
         this.indicators.push(indicator);
       }
     }
