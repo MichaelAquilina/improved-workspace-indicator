@@ -294,7 +294,3 @@ export default class WorkspaceLayout extends Extension {
     this.panel_button = null;
   }
 }
-
-function init() {
-  return new WorkspaceLayout();
-}
