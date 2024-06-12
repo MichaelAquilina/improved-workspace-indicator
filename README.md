@@ -21,18 +21,8 @@ _Refer to the [Custom CSS Guide](docs/how_to_custom_css.md) if you want to custo
 
 ## Publishing a new version
 
-1. Compile the schema
+1. Run `make package`
 
-```shell
-glib-compile-schemas schemas
-```
-
-2. Zip up the contents
-
-```shell
-rm *.zip && zip -r improved-workspace-indicator@michaelaquilina.github.io.zip . --exclude=README.md --exclude=.gitignore --exclude=screenshot.png --exclude=.git/\* --exclude=.circleci/\* --exclude=Makefile
-```
-
-3. Upload a new version to https://extensions.gnome.org/upload/
+2. Upload a new version to https://extensions.gnome.org/upload/
 
 [gextension]: https://extensions.gnome.org/extension/3968/improved-workspace-indicator/
