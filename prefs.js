@@ -161,6 +161,28 @@ export default class WorkspaceLayoutPref extends ExtensionPreferences {
       Gio.SettingsBindFlags.DEFAULT,
     );
 
+    // Hide Activities
+
+    let hide_activties_label = new Gtk.Label({
+      label: "Hide Activities Widget in Status Bar",
+      halign: Gtk.Align.START,
+    });
+    let hide_activities_toggle = new Gtk.Switch({
+      active: window.settings.get_boolean("hide-activities"),
+      halign: Gtk.Align.END,
+      visible: true,
+    });
+
+    prefsWidget.attach(hide_activties_label, 0, 6, 2, 1);
+    prefsWidget.attach(hide_activities_toggle, 2, 6, 2, 1);
+
+    window.settings.bind(
+      "hide-activities",
+      hide_activities_toggle,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    );
+
     // Custom CSS stylesheet
 
     var custom_css_box = new Gtk.Box({
@@ -258,9 +280,9 @@ export default class WorkspaceLayoutPref extends ExtensionPreferences {
     custom_css_box.append(custom_css_entry);
     custom_css_box.append(custom_css_button);
 
-    prefsWidget.attach(custom_css_label, 0, 6, 2, 1);
-    prefsWidget.attach(custom_css_help, 1, 6, 1, 1);
-    prefsWidget.attach(custom_css_box, 2, 6, 2, 1);
+    prefsWidget.attach(custom_css_label, 0, 7, 2, 1);
+    prefsWidget.attach(custom_css_help, 1, 7, 1, 1);
+    prefsWidget.attach(custom_css_box, 2, 7, 2, 1);
 
     group.add(prefsWidget);
     page.add(group);

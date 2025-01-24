@@ -45,5 +45,12 @@
         Set to true to loop back at first/last workspace when mouse-scroll.
       </description>
     </key>
+    <key name="hide-activities" type="b">
+      <default>true</default>
+      <summary>Hide the activities widget.</summary>
+      <description>
+        Hides the default Gnome Shell activities widget from the status area.
+      </description>
+    </key>
   </schema>
 </schemalist>

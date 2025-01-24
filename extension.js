@@ -143,7 +143,7 @@ export default class WorkspaceLayout extends Extension {
       }
     }
 
-    let gschema = Gio.SettingsSchemaSource.new_from_directory(
+    Gio.SettingsSchemaSource.new_from_directory(
       this.dir.get_child("schemas").get_path(),
       Gio.SettingsSchemaSource.get_default(),
       false,
@@ -176,8 +176,14 @@ export default class WorkspaceLayout extends Extension {
       },
     );
     //scroll wraparound
-    this._changeOnScrollChangedId = this.settings.connect(
+    this._wrapScrollChangeId = this.settings.connect(
       "changed::wrap-scroll",
+      () => {
+        this.add_panel_button();
+      },
+    );
+    this._hideActivitiesChangeId = this.settings.connect(
+      "changed::hide-activities",
       () => {
         this.add_panel_button();
       },
@@ -189,6 +195,11 @@ export default class WorkspaceLayout extends Extension {
   disable() {
     this.destroy_indicators();
     this.destroy_panel_button();
+
+    if (this.settings.get_boolean("hide-activities")) {
+      Main.panel.statusArea.activities.show();
+    }
+
     workspaceManager.disconnect(this._workspaceSwitchedId);
     workspaceManager.disconnect(this._workspaceAddedId);
     workspaceManager.disconnect(this._workspaceRemovedId);
@@ -196,6 +207,9 @@ export default class WorkspaceLayout extends Extension {
     this.settings.disconnect(this._panelPositionChangedId);
     this.settings.disconnect(this._skipTaskbarModeChangedId);
     this.settings.disconnect(this._changeOnClickChangedId);
+    this.settings.disconnect(this._wrapScrollChangeId);
+    this.settings.disconnect(this._changeOnScrollChangedId);
+    this.settings.disconnect(this._hideActivitiesChangeId);
     if (this.css_file !== null) {
       this.themeContext.get_theme().unload_stylesheet(this.css_file);
     }
@@ -236,6 +250,13 @@ export default class WorkspaceLayout extends Extension {
       0,
       position,
     );
+
+    if (this.settings.get_boolean("hide-activities")) {
+      Main.panel.statusArea.activities.hide();
+    } else {
+      Main.panel.statusArea.activities.show();
+    }
+
     this._workspaceSwitchedId = workspaceManager.connect_after(
       "workspace-switched",
       this.add_indicators.bind(this),
