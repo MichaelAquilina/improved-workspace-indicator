@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 24
+
+- Add "hide-activities" feature (on by default)
+
+
 ## 22
 
 - Support for Gnome 45 and 46
