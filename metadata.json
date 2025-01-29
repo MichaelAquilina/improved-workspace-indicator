@@ -4,7 +4,7 @@
   "settings-schema": "org.gnome.shell.extensions.improved-workspace-indicator",
   "description": "Slightly improved workspace indicator that shows both current and in use workspaces similar to i3/sway",
   "shell-version": ["45", "46"],
-  "version": 24,
+  "version": 25,
   "original-authors": ["michaelaquilina@gmail.com"],
   "url": "https://github.com/MichaelAquilina/improved-workspace-indicator"
 }

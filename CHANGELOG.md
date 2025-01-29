@@ -1,9 +1,12 @@
 # CHANGELOG
 
+## 25
+
+- remove extra "Group Title" heading from preferences window
+
 ## 24
 
 - Add "hide-activities" feature (on by default)
-
 
 ## 22
 
