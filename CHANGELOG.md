@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 26
+
+- Fix bug where indicators would always show when workspaces only enabled on primary monitor
+
 ## 25
 
 - remove extra "Group Title" heading from preferences window

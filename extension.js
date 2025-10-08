@@ -91,6 +91,36 @@ let WorkspaceIndicator = GObject.registerClass(
     has_user_window() {
       let windows = this.workspace.list_windows();
 
+      // Exclude windows that appear on all workspaces; they would make
+      // every workspace look non-empty and defeat the purpose.
+      windows = windows.filter((w) => {
+        if (typeof w.is_on_all_workspaces === "function") {
+          return !w.is_on_all_workspaces();
+        }
+        return true;
+      });
+
+      // When GNOME is configured with workspaces only on the primary monitor,
+      // windows on secondary monitors are shown on all workspaces. Filter them
+      // out so we only count windows on the primary monitor for visibility.
+      try {
+        const mutterSettings = Gio.Settings.new("org.gnome.mutter");
+        const workspacesOnlyOnPrimary = mutterSettings.get_boolean(
+          "workspaces-only-on-primary",
+        );
+        if (workspacesOnlyOnPrimary && global.display) {
+          const primaryMonitorIndex = global.display.get_primary_monitor();
+          windows = windows.filter((w) => {
+            if (typeof w.get_monitor === "function") {
+              return w.get_monitor() === primaryMonitorIndex;
+            }
+            return true;
+          });
+        }
+      } catch (_e) {
+        // If schema is unavailable, proceed without primary-only filtering.
+      }
+
       if (!this.skip_taskbar_mode) {
         return windows.length > 0;
       }
