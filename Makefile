@@ -5,5 +5,5 @@ install:
 
 package:
 	glib-compile-schemas schemas
-	rm *.zip
+	rm -f *.zip
 	zip -r improved-workspace-indicator@michaelaquilina.github.io.zip . --exclude=README.md --exclude=.gitignore --exclude=screenshot.png --exclude=.git/\* --exclude=.circleci/\* --exclude=Makefile
