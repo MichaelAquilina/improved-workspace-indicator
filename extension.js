@@ -29,11 +29,18 @@ function workspace_switch(step, scroll_wrap) {
 
 let WorkspaceIndicator = GObject.registerClass(
   class WorkspaceIndicator extends St.Button {
-    _init(workspace, active, skip_taskbar_mode, change_on_click) {
+    _init(
+      workspace,
+      active,
+      window_changed_callback,
+      skip_taskbar_mode,
+      change_on_click,
+    ) {
       super._init();
       this.active = active;
       this.workspace = workspace;
       this.skip_taskbar_mode = skip_taskbar_mode;
+      this.window_changed_callback = window_changed_callback;
 
       // setup widgets
       this._widget = new St.Widget({
@@ -64,12 +71,12 @@ let WorkspaceIndicator = GObject.registerClass(
       this.add_child(this._widget);
 
       // Connect signals
-      this._windowAddedId = this.workspace.connect("window-added", () =>
-        this.show_or_hide(),
-      );
-      this._windowRemovedId = this.workspace.connect("window-removed", () =>
-        this.show_or_hide(),
-      );
+      this._windowAddedId = this.workspace.connect("window-added", () => {
+        this.window_changed_callback();
+      });
+      this._windowRemovedId = this.workspace.connect("window-removed", () => {
+        this.window_changed_callback();
+      });
 
       if (change_on_click) {
         this.connect("clicked", () =>
@@ -83,8 +90,10 @@ let WorkspaceIndicator = GObject.registerClass(
     show_or_hide() {
       if (this.active || this.has_user_window()) {
         this.show();
+        return true;
       } else {
         this.hide();
+        return false;
       }
     }
 
@@ -218,6 +227,12 @@ export default class WorkspaceLayout extends Extension {
         this.add_panel_button();
       },
     );
+    this._hideSingleWorkspacesChangeId = this.settings.connect(
+      "changed::hide-single-workspaces",
+      () => {
+        this.add_panel_button();
+      },
+    );
 
     this.add_panel_button();
   }
@@ -240,6 +255,7 @@ export default class WorkspaceLayout extends Extension {
     this.settings.disconnect(this._wrapScrollChangeId);
     this.settings.disconnect(this._changeOnScrollChangedId);
     this.settings.disconnect(this._hideActivitiesChangeId);
+    this.settings.disconnect(this._hideSingleWorkspacesChangeId);
     if (this.css_file !== null) {
       this.themeContext.get_theme().unload_stylesheet(this.css_file);
     }
@@ -317,6 +333,7 @@ export default class WorkspaceLayout extends Extension {
         let indicator = new WorkspaceIndicator(
           workspace,
           i == active_index,
+          () => this.show_or_hide_indicators(),
           this.settings.get_boolean("skip-taskbar-mode"),
           this.settings.get_boolean("change-on-click"),
         );
@@ -324,6 +341,26 @@ export default class WorkspaceLayout extends Extension {
         this.box_layout.add_child(indicator);
         this.indicators.push(indicator);
       }
+    }
+    this.show_or_hide_indicators();
+  }
+
+  show_or_hide_indicators() {
+    let hide_single_workspaces = this.settings.get_boolean(
+      "hide-single-workspaces",
+    );
+
+    let count = 0;
+    for (let indicator of this.indicators) {
+      if (indicator.show_or_hide()) {
+        count += 1;
+      }
+    }
+
+    if (hide_single_workspaces && count <= 1) {
+      this.panel_button.hide();
+    } else {
+      this.panel_button.show();
     }
   }
 

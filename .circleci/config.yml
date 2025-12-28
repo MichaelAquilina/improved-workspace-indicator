@@ -4,13 +4,13 @@ version: 2
 jobs:
   lint:
     docker:
-      - image: "node:18"
+      - image: "node:22"
     steps:
       - checkout
       - run:
           name: Prettier Check
           command: |
-            npx prettier -c .
+            npx prettier@3.7.4 -c .
 
 workflows:
   version: 2

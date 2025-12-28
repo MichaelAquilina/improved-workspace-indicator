@@ -163,6 +163,26 @@ export default class WorkspaceLayoutPref extends ExtensionPreferences {
       Gio.SettingsBindFlags.DEFAULT,
     );
 
+    // Hide single workspaces
+
+    let hide_single_workspaces_toggle = new Gtk.Switch({
+      active: window.settings.get_boolean("hide-single-workspaces"),
+      halign: Gtk.Align.END,
+      visible: true,
+    });
+
+    this.addWithLabel(
+      "Hide the workspace indicator if only a single workspace is open",
+      hide_single_workspaces_toggle,
+    );
+
+    window.settings.bind(
+      "hide-single-workspaces",
+      hide_single_workspaces_toggle,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    );
+
     // Custom CSS stylesheet
 
     var custom_css_box = new Gtk.Box({
