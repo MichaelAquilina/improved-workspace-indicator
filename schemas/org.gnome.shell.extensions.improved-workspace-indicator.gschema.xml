@@ -52,5 +52,13 @@
         Hides the default Gnome Shell activities widget from the status area.
       </description>
     </key>
+    <key name="hide-single-workspaces" type="b">
+      <default>false</default>
+      <summary>Hide the workspace indicator if only a single workspace is open.</summary>
+      <description>
+        Hide the improved workspace indicator if only one workspace is currently open.
+      </description>
+    </key>
+
   </schema>
 </schemalist>
