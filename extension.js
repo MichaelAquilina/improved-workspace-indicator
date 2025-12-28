@@ -29,12 +29,18 @@ function workspace_switch(step, scroll_wrap) {
 
 let WorkspaceIndicator = GObject.registerClass(
   class WorkspaceIndicator extends St.Button {
-    _init(workspace, active, window_changed_callback, skip_taskbar_mode, change_on_click) {
+    _init(
+      workspace,
+      active,
+      window_changed_callback,
+      skip_taskbar_mode,
+      change_on_click,
+    ) {
       super._init();
       this.active = active;
       this.workspace = workspace;
       this.skip_taskbar_mode = skip_taskbar_mode;
-      this.window_changed_callback = window_changed_callback
+      this.window_changed_callback = window_changed_callback;
 
       // setup widgets
       this._widget = new St.Widget({
@@ -340,10 +346,12 @@ export default class WorkspaceLayout extends Extension {
   }
 
   show_or_hide_indicators() {
-    let hide_single_workspaces = this.settings.get_boolean("hide-single-workspaces");
+    let hide_single_workspaces = this.settings.get_boolean(
+      "hide-single-workspaces",
+    );
 
     let count = 0;
-    for(let indicator of this.indicators) {
+    for (let indicator of this.indicators) {
       if (indicator.show_or_hide()) {
         count += 1;
       }

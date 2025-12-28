@@ -1,3 +1,6 @@
+format:
+	npx prettier -w .
+
 compile:
 	glib-compile-schemas schemas
 
