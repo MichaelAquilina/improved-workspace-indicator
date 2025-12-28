@@ -2,7 +2,7 @@ run-nested-session: install
 	dbus-run-session -- gnome-shell --devkit --wayland
 
 format:
-	npx prettier -w .
+	npx prettier@3.7.4 -w .
 
 compile:
 	glib-compile-schemas schemas
