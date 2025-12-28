@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 28
+
+- Add the ability to hide the workspace indicator if only one workspace is active
+
 ## 26
 
 - Fix bug where indicators would always show when workspaces only enabled on primary monitor
