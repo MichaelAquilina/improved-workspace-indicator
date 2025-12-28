@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 29
+
+- remove unused compiled schemas
+
 ## 28
 
 - Add the ability to hide the workspace indicator if only one workspace is active
