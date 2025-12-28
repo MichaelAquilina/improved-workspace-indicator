@@ -1,3 +1,6 @@
+run-nested-session: install
+	dbus-run-session -- gnome-shell --devkit --wayland
+
 format:
 	npx prettier -w .
 
