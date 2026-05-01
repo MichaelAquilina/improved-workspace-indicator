@@ -1,7 +1,7 @@
 compile:
 	glib-compile-schemas schemas
 
-run-tested-session:
+run-nested-session:
 	dbus-run-session -- gnome-shell --devkit --wayland
 
 format:
