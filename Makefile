@@ -1,4 +1,7 @@
-run-nested-session: install
+compile:
+	glib-compile-schemas schemas
+
+run-tested-session:
 	dbus-run-session -- gnome-shell --devkit --wayland
 
 format:

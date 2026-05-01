@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 30
+
+- add support for gnome 50
+
 ## 29
 
 - remove unused compiled schemas
